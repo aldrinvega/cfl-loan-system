@@ -7,6 +7,10 @@ IBM Plex Sans, and dark mode is kept (switch it from the user menu at the bottom
 This is the version being developed; `../app` is no longer updated.
 All data is fictional sample data held in memory; a reload resets it.
 
+**Client preview:** https://aldrinvega.github.io/cfl-loan-system/ (sign in with a sample account below).
+Every push to `main` runs the tests, builds, and republishes it through GitHub Actions
+(`.github/workflows/deploy.yml`); a failing test stops the deploy.
+
 ```sh
 npm install
 npm run dev      # http://localhost:5173
