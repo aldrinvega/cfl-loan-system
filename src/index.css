@@ -1,0 +1,166 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Meaning-carrying colors: paid ahead / balanced, and loan status. */
+  --color-positive: var(--positive);
+  --color-status-current: var(--status-current);
+  --color-status-updated: var(--status-updated);
+  --color-status-arrears: var(--status-arrears);
+  --color-status-past-due: var(--status-past-due);
+  --color-status-litigation: var(--status-litigation);
+  --color-status-dormant: var(--status-dormant);
+  --color-status-doubtful: var(--status-doubtful);
+}
+
+:root {
+  /* Design README tokens (design/README.md). */
+  --radius: 0.625rem;
+  --background: #f4f5f7;
+  --foreground: #161b22;
+  --card: #ffffff;
+  --card-foreground: #161b22;
+  --popover: #ffffff;
+  --popover-foreground: #161b22;
+  --primary: #1f4e8c;
+  --primary-foreground: #ffffff;
+  --secondary: #eef3fa;
+  --secondary-foreground: #1f3a5f;
+  --muted: #f7f8fa;
+  --muted-foreground: #57606a;
+  --accent: #eef3fa;
+  --accent-foreground: #161b22;
+  --destructive: #a11d1d;
+  --border: #d9dee5;
+  --input: #c5ccd6;
+  --ring: #1f4e8c;
+  --chart-1: #c7d6ea;
+  --chart-2: #8fb0da;
+  --chart-3: #4f7fbf;
+  --chart-4: #1f4e8c;
+  --chart-5: #14243b;
+  --sidebar: #14243b;
+  --sidebar-foreground: #c9d3e0;
+  --sidebar-primary: #b4161b;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2a4468;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #2a4468;
+  --sidebar-ring: #8fb0da;
+
+  --positive: #116329;
+  --status-current: #1f3a5f;
+  --status-updated: #116329;
+  --status-arrears: #7a5200;
+  --status-past-due: #9a3412;
+  --status-litigation: #a11d1d;
+  --status-dormant: #424a53;
+  --status-doubtful: #5b3a9e;
+}
+
+/* Dark mode keeps the same hues, lifted for contrast on dark surfaces. */
+.dark {
+  --background: #0d1117;
+  --foreground: #e6edf3;
+  --card: #161b22;
+  --card-foreground: #e6edf3;
+  --popover: #161b22;
+  --popover-foreground: #e6edf3;
+  --primary: #5b8fd6;
+  --primary-foreground: #0d1117;
+  --secondary: #1f2a3a;
+  --secondary-foreground: #c9d3e0;
+  --muted: #1c222b;
+  --muted-foreground: #9aa4af;
+  --accent: #1f2a3a;
+  --accent-foreground: #e6edf3;
+  --destructive: #f07178;
+  --border: rgb(255 255 255 / 10%);
+  --input: rgb(255 255 255 / 16%);
+  --ring: #5b8fd6;
+  --chart-1: #1f3554;
+  --chart-2: #3a5f91;
+  --chart-3: #5b8fd6;
+  --chart-4: #8fb0da;
+  --chart-5: #c7d6ea;
+  --sidebar: #0b1626;
+  --sidebar-foreground: #c9d3e0;
+  --sidebar-primary: #d4373c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1f3554;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgb(255 255 255 / 10%);
+  --sidebar-ring: #5b8fd6;
+
+  --positive: #3fb950;
+  --status-current: #79a8e8;
+  --status-updated: #3fb950;
+  --status-arrears: #e3b341;
+  --status-past-due: #f0883e;
+  --status-litigation: #f07178;
+  --status-dormant: #9aa4af;
+  --status-doubtful: #b392f0;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
