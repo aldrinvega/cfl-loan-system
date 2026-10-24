@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { Page } from '@/components/layout'
 import { ButtonLink } from '@/components/button-link'
 import { downloadCsv, ExportButtons, ReportTabs, ReportTitle, SimpleSelect } from '@/components/reports'
-import { PageHeader, SampleNote, StatCard } from '@/components/shared'
+import { PageHeader, SampleNote, StatCard, StatStrip } from '@/components/shared'
 import { Card, CardContent } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Progress, ProgressLabel, ProgressValue } from '@/components/ui/progress'
@@ -60,8 +60,8 @@ export function LoanLedger() {
       />
       <ReportTabs />
 
-      <Card className="no-print">
-        <CardContent className="flex flex-wrap items-end gap-4">
+      <div className="no-print">
+        <div className="flex flex-wrap items-end gap-4">
           <Field className="max-w-md flex-1">
             <FieldLabel htmlFor="ll-loan">Loan</FieldLabel>
             <SimpleSelect id="ll-loan" value={loanId} onValueChange={setLoanId} options={options} />
@@ -71,12 +71,12 @@ export function LoanLedger() {
               Open client profile
             </ButtonLink>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {entry && account ? (
         <>
-          <div className="no-print grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatStrip>
             <StatCard label="Balance" value={formatPeso(entry.summary.balance)} />
             <StatCard label="Total charges" value={formatPeso(entry.summary.totalCharges)} />
             <StatCard label="Total paid" value={formatPeso(entry.summary.totalPaid)} />
@@ -84,7 +84,7 @@ export function LoanLedger() {
               label="Next due"
               value={entry.summary.next ? formatPeso(entry.summary.next.amountDue) : 'Paid'}
             />
-          </div>
+          </StatStrip>
 
           <Card aria-label="Report preview" className="print:ring-0">
             <CardContent className="flex flex-col gap-6">
@@ -99,7 +99,7 @@ export function LoanLedger() {
                 </ProgressLabel>
                 <ProgressValue className="ml-auto" />
               </Progress>
-              <div className="rounded-lg border">
+              <div className="-mx-3">
                 <Table>
                   <TableHeader>
                     <TableRow>

@@ -3,7 +3,6 @@ import { formatMdy, parseMdy, type IsoDate } from '@/lib/dates'
 import { branches, collectors } from '@/data/sample'
 import { SimpleSelect } from '@/components/reports'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { collectorLabel, useSession } from '@/state/session'
@@ -84,10 +83,10 @@ export function ReportFilters({
 }) {
   const { draft, setDraft, user } = filters
   return (
-    <Card className="no-print">
-      <CardContent>
+    <div className="no-print">
+      <div>
         <form
-          className="flex flex-wrap items-end gap-4"
+          className="flex flex-wrap items-end gap-3"
           onSubmit={(e) => {
             e.preventDefault()
             filters.run()
@@ -127,10 +126,10 @@ export function ReportFilters({
             </Field>
           )}
           {children}
-          <Button type="submit">Run report</Button>
+          <Button type="submit" variant="outline">Run report</Button>
           {filters.dateError && <FieldError className="basis-full">{filters.dateError}</FieldError>}
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

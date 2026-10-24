@@ -3,6 +3,7 @@ import { ChevronRight, Eye } from 'lucide-react'
 import { formatWeekdayShortYear } from '@/lib/dates'
 import { splitTotal } from '@/lib/ledger'
 import { formatPeso, sum } from '@/lib/money'
+import { Money } from '@/components/money'
 import { collectors } from '@/data/sample'
 import { greetingFor, useNow } from '@/hooks/use-now'
 import { MobileScreen } from '@/components/mobile-layout'
@@ -58,7 +59,7 @@ export function Today() {
       <Card>
         <CardHeader>
           <CardDescription>Collectible today</CardDescription>
-          <CardTitle className="text-3xl font-semibold">{formatPeso(collectible)}</CardTitle>
+          <CardTitle className="text-3xl font-medium tracking-[-0.02em]"><Money value={collectible} /></CardTitle>
           <CardAction>
             <Badge variant={overdue ? 'destructive' : 'outline'}>
               {overdue ? `${overdue} overdue` : 'None overdue'}
@@ -74,7 +75,7 @@ export function Today() {
           </div>
           <div className="flex flex-col">
             <span className="text-xs text-muted-foreground">Penalties included</span>
-            <span className="font-medium">{formatPeso(sum(due, (a) => a.split.due.penalty))}</span>
+            <span className="font-medium"><Money value={sum(due, (a) => a.split.due.penalty)} /></span>
           </div>
         </CardContent>
       </Card>
@@ -129,7 +130,7 @@ function AccountList({ accounts, amount }: { accounts: RouteAccount[]; amount: (
               </ItemDescription>
             </ItemContent>
             <ItemActions>
-              <span className="font-medium tabular-nums">{amount(a) ? formatPeso(amount(a)) : '–'}</span>
+              <span className="font-medium tabular-nums">{amount(a) ? <Money value={amount(a)} /> : '–'}</span>
               <ChevronRight className="size-4 text-muted-foreground" />
             </ItemActions>
           </Item>

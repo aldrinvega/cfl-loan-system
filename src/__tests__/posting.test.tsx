@@ -49,7 +49,7 @@ describe('cashiering → cash receipts', () => {
 
     // 1. Route, 2. account.
     await user.click(screen.getByRole('button', { name: /03 · R\. Lacson/ }))
-    await user.click(screen.getByText('CASTILLO, NORA'))
+    await user.click(screen.getByText('Castillo, Nora'))
     const or = screen.getByLabelText('OR number') as HTMLInputElement
     expect(or.value).toBe('450112')
     expect(or.readOnly).toBe(true)

@@ -1,0 +1,978 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-24T01:05:07.302Z",
+  "title": "Design System: Cash Flow Lending",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Canvas White",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Ink",
+        "canonical": "#0a0a0a",
+        "oklch": "oklch(14.5% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Ledger Black",
+        "canonical": "#141414",
+        "oklch": "oklch(19.1% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Ledger Black, hover",
+        "canonical": "#373737",
+        "oklch": "oklch(33.7% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "primary-ink": {
+        "role": "neutral",
+        "displayName": "On Black",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "sidebar-ground": {
+        "role": "neutral",
+        "displayName": "Blue-Grey Ground",
+        "canonical": "#f6f7f9",
+        "oklch": "oklch(97.6% 0.003 264.5)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252526",
+          "#414243",
+          "#606163",
+          "#818284",
+          "#a4a5a6",
+          "#c9c9ca",
+          "#eeeeef"
+        ]
+      },
+      "sidebar-ink": {
+        "role": "neutral",
+        "displayName": "Sidebar Ink",
+        "canonical": "#3d3d3d",
+        "oklch": "oklch(36.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "sidebar-active": {
+        "role": "neutral",
+        "displayName": "Pressed Grey",
+        "canonical": "#e9eaed",
+        "oklch": "oklch(93.7% 0.004 271.4)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252526",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#a4a5a7",
+          "#c8c9ca",
+          "#eeeeef"
+        ]
+      },
+      "hover-wash": {
+        "role": "neutral",
+        "displayName": "Hover Wash",
+        "canonical": "#f2f3f5",
+        "oklch": "oklch(96.4% 0.003 264.5)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252526",
+          "#414243",
+          "#606163",
+          "#818284",
+          "#a4a5a6",
+          "#c9c9ca",
+          "#eeeeef"
+        ]
+      },
+      "secondary-fill": {
+        "role": "neutral",
+        "displayName": "Fill Grey",
+        "canonical": "#eeeeee",
+        "oklch": "oklch(94.9% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Ledger Grey",
+        "canonical": "#6b6b6b",
+        "oklch": "oklch(52.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#e6e6e6",
+        "oklch": "oklch(92.5% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "row-rule": {
+        "role": "neutral",
+        "displayName": "Row Rule",
+        "canonical": "#f0f0f0",
+        "oklch": "oklch(95.5% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "control-border": {
+        "role": "neutral",
+        "displayName": "Control Edge",
+        "canonical": "#d4d4d4",
+        "oklch": "oklch(87.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "data-blue": {
+        "role": "secondary",
+        "displayName": "Ledger Blue",
+        "canonical": "#1d5fbf",
+        "oklch": "oklch(50.1% 0.165 258.7)",
+        "tonalRamp": [
+          "#050b15",
+          "#0a244a",
+          "#0b3e86",
+          "#1a5cbc",
+          "#3f80e3",
+          "#71a6f6",
+          "#abcbfc",
+          "#e5efff"
+        ]
+      },
+      "money-in": {
+        "role": "tertiary",
+        "displayName": "Money-In Green",
+        "canonical": "#2e7d32",
+        "oklch": "oklch(52.3% 0.135 144.2)",
+        "tonalRamp": [
+          "#060d06",
+          "#0e2d0f",
+          "#125017",
+          "#237429",
+          "#49974b",
+          "#7ab77a",
+          "#b1d5b0",
+          "#e7f2e6"
+        ]
+      },
+      "destructive": {
+        "role": "tertiary",
+        "displayName": "Correction Red",
+        "canonical": "#c4242a",
+        "oklch": "oklch(53.2% 0.194 25.5)",
+        "tonalRamp": [
+          "#160605",
+          "#480a0b",
+          "#81000e",
+          "#b60d1d",
+          "#df4241",
+          "#f77a72",
+          "#ffb2ab",
+          "#ffe8e5"
+        ]
+      },
+      "destructive-wash": {
+        "role": "tertiary",
+        "displayName": "Correction Wash",
+        "canonical": "#f9e9ea",
+        "oklch": "oklch(94.7% 0.017 13.1)",
+        "tonalRamp": [
+          "#0c0b0b",
+          "#292324",
+          "#493f40",
+          "#6b5d5e",
+          "#8c7e7f",
+          "#aea2a2",
+          "#cec7c7",
+          "#f0eeee"
+        ]
+      },
+      "chart-faint": {
+        "role": "neutral",
+        "displayName": "Chart Faint",
+        "canonical": "#e5e5e5",
+        "oklch": "oklch(92.2% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "chart-grey": {
+        "role": "neutral",
+        "displayName": "Chart Grey",
+        "canonical": "#b8b8b8",
+        "oklch": "oklch(78.3% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "pill-neutral": {
+        "role": "status",
+        "displayName": "Pill neutral",
+        "canonical": "#eeeeee",
+        "oklch": "oklch(94.9% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "pill-neutral-ink": {
+        "role": "status",
+        "displayName": "Pill neutral ink",
+        "canonical": "#3d3d3d",
+        "oklch": "oklch(36.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "pill-positive": {
+        "role": "status",
+        "displayName": "Pill positive",
+        "canonical": "#dcfae5",
+        "oklch": "oklch(95.8% 0.042 155.0)",
+        "tonalRamp": [
+          "#090c0a",
+          "#1e2821",
+          "#34473a",
+          "#4e6957",
+          "#6f8a77",
+          "#95ac9c",
+          "#c0cdc4",
+          "#ebf0ed"
+        ]
+      },
+      "pill-positive-ink": {
+        "role": "status",
+        "displayName": "Pill positive ink",
+        "canonical": "#04250e",
+        "oklch": "oklch(23.4% 0.058 150.0)",
+        "tonalRamp": [
+          "#090c09",
+          "#1c291e",
+          "#304935",
+          "#496b50",
+          "#6a8c70",
+          "#91ae96",
+          "#bdcec0",
+          "#ebf0eb"
+        ]
+      },
+      "pill-negative": {
+        "role": "status",
+        "displayName": "Pill negative",
+        "canonical": "#ffedea",
+        "oklch": "oklch(96.0% 0.020 28.9)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#292322",
+          "#4a3f3d",
+          "#6c5d5b",
+          "#8e7e7b",
+          "#afa29f",
+          "#cfc7c6",
+          "#f0eeed"
+        ]
+      },
+      "pill-negative-ink": {
+        "role": "status",
+        "displayName": "Pill negative ink",
+        "canonical": "#831c1e",
+        "oklch": "oklch(40.3% 0.138 25.1)",
+        "tonalRamp": [
+          "#130807",
+          "#3f1614",
+          "#712422",
+          "#a13937",
+          "#c85c57",
+          "#e28982",
+          "#f1b9b4",
+          "#fceae7"
+        ]
+      },
+      "pill-warning": {
+        "role": "status",
+        "displayName": "Pill warning",
+        "canonical": "#fffbeb",
+        "oklch": "oklch(98.7% 0.021 95.3)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#262520",
+          "#454238",
+          "#656154",
+          "#868274",
+          "#a8a599",
+          "#cbc9c2",
+          "#efeeec"
+        ]
+      },
+      "pill-warning-ink": {
+        "role": "status",
+        "displayName": "Pill warning ink",
+        "canonical": "#92400e",
+        "oklch": "oklch(47.3% 0.125 46.2)",
+        "tonalRamp": [
+          "#120905",
+          "#3c1b09",
+          "#6b2d08",
+          "#984616",
+          "#be683c",
+          "#d9916f",
+          "#ebbeaa",
+          "#faebe4"
+        ]
+      },
+      "dark-canvas": {
+        "role": "dark-theme",
+        "displayName": "Dark canvas",
+        "canonical": "#0f0f0f",
+        "oklch": "oklch(16.8% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-card": {
+        "role": "dark-theme",
+        "displayName": "Dark card",
+        "canonical": "#161616",
+        "oklch": "oklch(20.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-popover": {
+        "role": "dark-theme",
+        "displayName": "Dark popover",
+        "canonical": "#1b1b1b",
+        "oklch": "oklch(22.2% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-sidebar-ground": {
+        "role": "dark-theme",
+        "displayName": "Dark sidebar ground",
+        "canonical": "#0a0a0a",
+        "oklch": "oklch(14.5% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-ink": {
+        "role": "dark-theme",
+        "displayName": "Dark ink",
+        "canonical": "#f5f5f5",
+        "oklch": "oklch(97.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-muted-ink": {
+        "role": "dark-theme",
+        "displayName": "Dark muted ink",
+        "canonical": "#a3a3a3",
+        "oklch": "oklch(71.5% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-border": {
+        "role": "dark-theme",
+        "displayName": "Dark border",
+        "canonical": "#2a2a2a",
+        "oklch": "oklch(28.5% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-row-rule": {
+        "role": "dark-theme",
+        "displayName": "Dark row rule",
+        "canonical": "#202020",
+        "oklch": "oklch(24.4% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-control-border": {
+        "role": "dark-theme",
+        "displayName": "Dark control border",
+        "canonical": "#3d3d3d",
+        "oklch": "oklch(36.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "dark-data-blue": {
+        "role": "dark-theme",
+        "displayName": "Dark data blue",
+        "canonical": "#6f9ee6",
+        "oklch": "oklch(69.6% 0.118 258.7)",
+        "tonalRamp": [
+          "#070b13",
+          "#142540",
+          "#204173",
+          "#3560a3",
+          "#5583c8",
+          "#81a7e0",
+          "#b4cbee",
+          "#e7effb"
+        ]
+      },
+      "dark-link": {
+        "role": "dark-theme",
+        "displayName": "Dark link",
+        "canonical": "#8db4f0",
+        "oklch": "oklch(76.4% 0.097 258.8)",
+        "tonalRamp": [
+          "#080b11",
+          "#17253b",
+          "#28426a",
+          "#3e6198",
+          "#5e83bc",
+          "#88a7d6",
+          "#b8cbe7",
+          "#e9eff8"
+        ]
+      },
+      "dark-money-in": {
+        "role": "dark-theme",
+        "displayName": "Dark money in",
+        "canonical": "#3fc07a",
+        "oklch": "oklch(72.0% 0.152 155.4)",
+        "tonalRamp": [
+          "#040e07",
+          "#002f15",
+          "#005323",
+          "#007938",
+          "#009c59",
+          "#5fbb84",
+          "#a4d8b5",
+          "#e3f3e8"
+        ]
+      },
+      "dark-destructive": {
+        "role": "dark-theme",
+        "displayName": "Dark destructive",
+        "canonical": "#e5566f",
+        "oklch": "oklch(64.8% 0.178 13.1)",
+        "tonalRamp": [
+          "#150708",
+          "#450e19",
+          "#7b0d2c",
+          "#ae1e43",
+          "#d74963",
+          "#ef7d8c",
+          "#fab3ba",
+          "#ffe8e9"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Dashboard greeting and a detail panel's lead figure."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Every page noun title."
+      },
+      "figure-kpi": {
+        "displayName": "Figure KPI",
+        "purpose": "Dashboard KPI strip values."
+      },
+      "figure-strip": {
+        "displayName": "Figure Strip",
+        "purpose": "Summary strip values on list screens."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card, panel and dialog titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Table cells, facts, descriptions, nav labels."
+      },
+      "body-strong": {
+        "displayName": "Body Strong",
+        "purpose": "Names and IDs in rows, button labels, active nav."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Stat labels and sm button text."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Table headers (sentence case), sub-lines, pills."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Literal type-this-exactly strings only; IDs stay in Geist."
+      }
+    },
+    "money": {
+      "wholeSize": "1em",
+      "centsSize": "max(0.64em, 11px)",
+      "centsRaise": "0.42em",
+      "centsLetterSpacing": "0.01em",
+      "centsGap": "0.04em",
+      "wrap": "nowrap",
+      "numeric": "tabular-nums",
+      "signs": "U+2212 minus for negatives; leading + for money in (green)"
+    },
+    "shadows": [
+      {
+        "name": "panel-lift",
+        "value": "0 16px 48px -12px rgb(0 0 0 / 0.18)",
+        "purpose": "Right-hand detail panel and other sheets; backdrop rgb(0 0 0 / 0.06), 0.4 in dark."
+      },
+      {
+        "name": "dialog-lift",
+        "value": "0 24px 64px -16px rgb(0 0 0 / 0.25), 0 0 0 1px rgb(10 10 10 / 0.1)",
+        "purpose": "Centred dialogs; backdrop rgb(0 0 0 / 0.2)."
+      },
+      {
+        "name": "focus-ring-control",
+        "value": "0 0 0 3px rgb(29 95 191 / 0.25)",
+        "purpose": "Button focus, with the border turning Ledger Blue."
+      },
+      {
+        "name": "focus-ring-field",
+        "value": "0 0 0 3px rgb(29 95 191 / 0.2)",
+        "purpose": "Input and search-field focus."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Press feedback, dialog open, state transitions."
+      },
+      {
+        "name": "ease-drawer",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "Detail panel entrance."
+      },
+      {
+        "name": "press",
+        "value": "transform scale(0.97) 160ms ease-out",
+        "purpose": "Every enabled button on :active; dropped under prefers-reduced-motion."
+      },
+      {
+        "name": "panel-in",
+        "value": "300ms ease-drawer, translateX(100%) to 0 with fade",
+        "purpose": "Detail panel enter; reduced motion keeps the fade only."
+      },
+      {
+        "name": "panel-out",
+        "value": "150ms ease-out, translateX(24px) with fade",
+        "purpose": "Detail panel exit."
+      },
+      {
+        "name": "dialog-in",
+        "value": "150ms ease-out, fade + zoom from 0.97",
+        "purpose": "Dialog enter; exit 100ms."
+      },
+      {
+        "name": "row-hover",
+        "value": "background-color 150ms",
+        "purpose": "Table row hover wash."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px",
+        "purpose": "Initials circles and row action cells appear; strips go flex."
+      },
+      {
+        "name": "md",
+        "value": "768px",
+        "purpose": "Sidebar shows (sheet below); secondary table columns appear; inputs drop to 14px."
+      },
+      {
+        "name": "lg",
+        "value": "1024px",
+        "purpose": "Business-day status appears in the top bar."
+      },
+      {
+        "name": "xl",
+        "value": "1280px",
+        "purpose": "Dashboard KPI strip 4-up; main column + 380px side column."
+      },
+      {
+        "name": "content-max",
+        "value": "1360px",
+        "purpose": "Canvas column cap."
+      }
+    ],
+    "darkTheme": {
+      "strategy": "True neutral; elevation by lightness; the same single blue lifted.",
+      "tokens": {
+        "dark-canvas": "#0f0f0f",
+        "dark-card": "#161616",
+        "dark-popover": "#1b1b1b",
+        "dark-sidebar-ground": "#0a0a0a",
+        "dark-ink": "#f5f5f5",
+        "dark-muted-ink": "#a3a3a3",
+        "dark-border": "#2a2a2a",
+        "dark-row-rule": "#202020",
+        "dark-control-border": "#3d3d3d",
+        "dark-data-blue": "#6f9ee6",
+        "dark-link": "#8db4f0",
+        "dark-money-in": "#3fc07a",
+        "dark-destructive": "#e5566f"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one solid action on a screen or panel footer: Ledger Black, 40px, press to 0.97.",
+      "html": "<button class=\"ds-btn-primary\">Post receipts</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border:1px solid transparent;border-radius:6.4px;background:var(--primary,#141414);color:var(--primary-foreground,#fff);font:500 14px/20px Geist,system-ui,sans-serif;cursor:pointer;transition:background-color 160ms cubic-bezier(.23,1,.32,1),transform 160ms cubic-bezier(.23,1,.32,1),box-shadow 160ms cubic-bezier(.23,1,.32,1)}.ds-btn-primary:hover{background:#373737}.ds-btn-primary:focus-visible{outline:none;border-color:#1d5fbf;box-shadow:0 0 0 3px rgb(29 95 191/.25)}.ds-btn-primary:active{transform:scale(.97)}@media (prefers-reduced-motion:reduce){.ds-btn-primary:active{transform:none}}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary actions and the role's primary job in the top bar (Encode payment, New loan).",
+      "html": "<button class=\"ds-btn-outline\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z\"/><path d=\"M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8\"/><path d=\"M12 17.5v-11\"/></svg>Encode payment</button>",
+      "css": ".ds-btn-outline{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px 0 12px;border:1px solid var(--input,#d4d4d4);border-radius:6.4px;background:var(--background,#fff);color:var(--foreground,#0a0a0a);font:500 14px/20px Geist,system-ui,sans-serif;cursor:pointer;transition:background-color 160ms cubic-bezier(.23,1,.32,1),transform 160ms cubic-bezier(.23,1,.32,1)}.ds-btn-outline:hover{background:#f2f3f5}.ds-btn-outline:focus-visible{outline:none;border-color:#1d5fbf;box-shadow:0 0 0 3px rgb(29 95 191/.25)}.ds-btn-outline:active{transform:scale(.97)}"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Cancel a receipt: red text on a 10% red wash, never a solid red block.",
+      "html": "<button class=\"ds-btn-destructive\">Cancel receipt</button>",
+      "css": ".ds-btn-destructive{display:inline-flex;align-items:center;height:40px;padding:0 14px;border:1px solid transparent;border-radius:6.4px;background:rgb(196 36 42/.1);color:#c4242a;font:500 14px/20px Geist,system-ui,sans-serif;cursor:pointer;transition:background-color 160ms cubic-bezier(.23,1,.32,1),transform 160ms cubic-bezier(.23,1,.32,1)}.ds-btn-destructive:hover{background:rgb(196 36 42/.2)}.ds-btn-destructive:focus-visible{outline:none;border-color:rgb(196 36 42/.4);box-shadow:0 0 0 3px rgb(196 36 42/.2)}.ds-btn-destructive:active{transform:scale(.97)}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "40px field with a control-grey edge; focus turns the edge Ledger Blue with a soft ring.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">OR number</span><input class=\"ds-input\" placeholder=\"e.g. 104523\"></label>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:8px;font:500 14px/20px Geist,system-ui,sans-serif;color:#0a0a0a}.ds-input{height:40px;width:260px;padding:4px 12px;border:1px solid var(--input,#d4d4d4);border-radius:6.4px;background:#fff;color:#0a0a0a;font:400 14px/20px Geist,system-ui,sans-serif;outline:none;transition:border-color 150ms,box-shadow 150ms}.ds-input::placeholder{color:#6b6b6b}.ds-input:focus-visible{border-color:#1d5fbf;box-shadow:0 0 0 3px rgb(29 95 191/.2)}"
+    },
+    {
+      "name": "Status Pills",
+      "kind": "chip",
+      "refersTo": "pill-warning",
+      "description": "Pale pairs, only where action is needed; Released stays plain grey text.",
+      "html": "<div class=\"ds-pills\"><span class=\"ds-pill ds-pill-warning\">For approval</span><span class=\"ds-pill ds-pill-positive\">Approved</span><span class=\"ds-pill ds-pill-negative\">Cancelled</span><span class=\"ds-pill ds-pill-neutral\">Today</span><span class=\"ds-plain\">Released</span></div>",
+      "css": ".ds-pills{display:flex;gap:8px;align-items:center;font-family:Geist,system-ui,sans-serif}.ds-pill{display:inline-flex;align-items:center;height:20px;padding:2px 6px;border-radius:5px;font:500 12px/16px Geist,system-ui,sans-serif;white-space:nowrap}.ds-pill-warning{background:#fffbeb;color:#92400e}.ds-pill-positive{background:#dcfae5;color:#04250e}.ds-pill-negative{background:#ffedea;color:#831c1e}.ds-pill-neutral{background:#eeeeee;color:#3d3d3d}.ds-plain{font-size:14px;color:#6b6b6b}"
+    },
+    {
+      "name": "Sidebar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Blue-grey ground, 32px items, pressed-grey active pill with ink label and icon.",
+      "html": "<nav class=\"ds-nav\"><div class=\"ds-nav-brand\"><span class=\"ds-nav-tile\">CF</span><span><b>Cash Flow Lending</b><small>Sindalan Branch</small></span></div><a class=\"ds-nav-item is-active\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/><path d=\"M16 13H8\"/><path d=\"M16 17H8\"/></svg>Loans</a><a class=\"ds-nav-item\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/></svg>Clients</a></nav>",
+      "css": ".ds-nav{display:flex;flex-direction:column;gap:2px;width:240px;padding:12px;background:#f6f7f9;border-right:1px solid #e6e6e6;font-family:Geist,system-ui,sans-serif}.ds-nav-brand{display:flex;align-items:center;gap:10px;height:44px;padding:0 6px;margin-bottom:8px}.ds-nav-brand b{display:block;font:500 14px/18px Geist,system-ui,sans-serif;color:#0a0a0a}.ds-nav-brand small{display:block;font-size:12px;color:#6b6b6b}.ds-nav-tile{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6.4px;background:#141414;color:#fff;font:600 11px/1 Geist,system-ui,sans-serif}.ds-nav-item{display:flex;align-items:center;gap:10px;height:32px;padding:0 10px;border-radius:6.4px;color:#3d3d3d;font:400 14px/20px Geist,system-ui,sans-serif;text-decoration:none;transition:background-color 150ms}.ds-nav-item svg{color:#6b6b6b}.ds-nav-item:hover{background:#e9eaed;color:#0a0a0a}.ds-nav-item.is-active{background:#e9eaed;color:#0a0a0a;font-weight:500}.ds-nav-item.is-active svg{color:#0a0a0a}.ds-nav-item:focus-visible{outline:2px solid #1d5fbf;outline-offset:-2px}"
+    },
+    {
+      "name": "Ledger Table",
+      "kind": "custom",
+      "refersTo": "table-row",
+      "description": "12px grey sentence-case headers, 44px rows on #f0f0f0 rules, right-aligned tabular money with raised centavos; a row opens the detail panel.",
+      "html": "<table class=\"ds-table\"><thead><tr><th>Client</th><th>Product</th><th class=\"r\">Principal</th><th>Status</th></tr></thead><tbody><tr tabindex=\"0\"><td><span class=\"ds-person\"><span class=\"ds-av\">JN</span><span><b>Navarro, Joy</b><small>LN-2026-0481</small></span></span></td><td>Weekly regular</td><td class=\"r\"><span class=\"ds-money\">9,000<span class=\"ds-cents\">.00</span></span></td><td><span class=\"ds-pill-w\">For approval</span></td></tr><tr tabindex=\"0\" class=\"is-open\"><td><span class=\"ds-person\"><span class=\"ds-av\">GE</span><span><b>Espiritu, Gil</b><small>LN-2026-0482</small></span></span></td><td>Weekly regular</td><td class=\"r\"><span class=\"ds-money\">12,000<span class=\"ds-cents\">.00</span></span></td><td><span class=\"ds-grey\">Released</span></td></tr></tbody></table>",
+      "css": ".ds-table{width:560px;border-collapse:collapse;font:400 14px/20px Geist,system-ui,sans-serif;color:#0a0a0a;font-variant-numeric:tabular-nums}.ds-table th{height:36px;padding:0 12px;text-align:left;font-size:12px;font-weight:400;color:#6b6b6b;border-bottom:1px solid #e6e6e6;white-space:nowrap}.ds-table td{height:44px;padding:8px 12px;border-bottom:1px solid #f0f0f0;white-space:nowrap}.ds-table tbody tr:last-child td{border-bottom:0}.ds-table tbody tr{cursor:pointer;transition:background-color 150ms}.ds-table tbody tr:hover,.ds-table tbody tr:focus-visible{background:#f6f7f9;outline:none}.ds-table tbody tr.is-open{background:#e9eaed}.ds-table .r{text-align:right}.ds-person{display:flex;align-items:center;gap:12px}.ds-person b{display:block;font-weight:500}.ds-person small{display:block;font-size:12px;line-height:16px;color:#6b6b6b}.ds-av{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:9999px;background:#e9eaed;font-size:11px;font-weight:500;color:rgb(10 10 10/.8)}.ds-money{white-space:nowrap}.ds-cents{font-size:max(.64em,11px);vertical-align:.42em;line-height:0;letter-spacing:.01em;margin-left:.04em}.ds-pill-w{display:inline-flex;height:20px;align-items:center;padding:2px 6px;border-radius:5px;background:#fffbeb;color:#92400e;font-size:12px;font-weight:500}.ds-grey{color:#6b6b6b}"
+    },
+    {
+      "name": "Summary Strip",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Totals between two hairlines, split by vertical hairlines; replaces KPI cards.",
+      "html": "<div class=\"ds-strip\"><div><span>For approval · 1</span><strong>₱9,000<i>.00</i></strong></div><div><span>Approved, to release · 1</span><strong>₱12,000<i>.00</i></strong></div><div><span>Released · 24</span><strong>₱226,100<i>.00</i></strong></div></div>",
+      "css": ".ds-strip{display:flex;border-top:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6;font-family:Geist,system-ui,sans-serif}.ds-strip>div{display:flex;flex-direction:column;gap:4px;padding:16px 40px 16px 0}.ds-strip>div+div{padding-left:40px;border-left:1px solid #e6e6e6}.ds-strip span{font-size:13px;color:#6b6b6b}.ds-strip strong{font:500 20px/28px Geist,system-ui,sans-serif;letter-spacing:-.01em;color:#0a0a0a;font-variant-numeric:tabular-nums;white-space:nowrap}.ds-strip i{font-style:normal;font-size:max(.64em,11px);vertical-align:.42em;line-height:0;margin-left:.04em}"
+    },
+    {
+      "name": "Detail Panel",
+      "kind": "custom",
+      "refersTo": "detail-panel",
+      "description": "The 420px right panel a row opens: title, lead figure, timeline, facts, actions pinned at the foot.",
+      "html": "<aside class=\"ds-panel\"><header><h3>LN-2026-0482 · Espiritu, Gil</h3><p>Weekly regular, 12 weekly installments</p></header><div class=\"ds-panel-body\"><div class=\"ds-lead\">₱12,000<i>.00</i><small>Approved · applied 10/21/2026</small></div><ol class=\"ds-tl\"><li class=\"done\"><b>Filed for approval</b><small>10/21/2026 by A. Cruz</small></li><li class=\"done\"><b>Approved by T. Naguit</b></li><li><b>Not released yet</b></li></ol><dl class=\"ds-facts\"><div><dt>Principal</dt><dd>₱12,000<i>.00</i></dd></div><div><dt>Term</dt><dd>12 weekly</dd></div></dl></div><footer><button class=\"ds-pbtn\">Open client</button></footer></aside>",
+      "css": ".ds-panel{display:flex;flex-direction:column;width:420px;background:#fff;border-left:1px solid #e6e6e6;box-shadow:0 16px 48px -12px rgb(0 0 0/.18);font:400 14px/20px Geist,system-ui,sans-serif;color:#0a0a0a;font-variant-numeric:tabular-nums;animation:ds-panel-in 300ms cubic-bezier(.32,.72,0,1)}@keyframes ds-panel-in{from{transform:translateX(100%);opacity:0}}@media (prefers-reduced-motion:reduce){.ds-panel{animation-name:ds-fade}@keyframes ds-fade{from{opacity:0}}}.ds-panel header{padding:24px 24px 20px;border-bottom:1px solid #e6e6e6}.ds-panel h3{margin:0;font:500 16px/22px Geist,system-ui,sans-serif}.ds-panel header p{margin:4px 0 0;color:#6b6b6b}.ds-panel-body{display:flex;flex-direction:column;gap:24px;padding:20px 24px}.ds-lead{display:flex;flex-direction:column;gap:4px;font:500 28px/1.25 Geist,system-ui,sans-serif;letter-spacing:-.02em}.ds-lead small{font:400 14px/20px Geist,system-ui,sans-serif;letter-spacing:0;color:#6b6b6b}.ds-panel i{font-style:normal;font-size:max(.64em,11px);vertical-align:.42em;line-height:0;margin-left:.04em}.ds-tl{list-style:none;margin:0;padding:0}.ds-tl li{position:relative;padding:0 0 20px 23px}.ds-tl li:last-child{padding-bottom:0}.ds-tl li::before{content:\"\";position:absolute;left:0;top:4px;width:7px;height:7px;border-radius:50%;border:2px solid #e6e6e6;background:#fff}.ds-tl li.done::before{border-color:#1d5fbf;background:#1d5fbf}.ds-tl li.done::after{content:\"\";position:absolute;left:5px;top:12px;width:1px;height:100%;background:#1d5fbf}.ds-tl li:not(.done) b{color:#6b6b6b}.ds-tl b{display:block;font-weight:500}.ds-tl small{display:block;font-size:12px;color:#6b6b6b}.ds-facts{margin:0}.ds-facts div{display:flex;justify-content:space-between;gap:24px;padding:10px 0;border-bottom:1px solid #f0f0f0}.ds-facts div:last-child{border-bottom:0}.ds-facts dt{color:#6b6b6b}.ds-facts dd{margin:0;text-align:right}.ds-panel footer{display:flex;justify-content:flex-end;padding:16px 24px;border-top:1px solid #e6e6e6}.ds-pbtn{height:40px;padding:0 14px;border:1px solid #d4d4d4;border-radius:6.4px;background:#fff;font:500 14px/20px Geist,system-ui,sans-serif;cursor:pointer;transition:background-color 160ms cubic-bezier(.23,1,.32,1),transform 160ms cubic-bezier(.23,1,.32,1)}.ds-pbtn:hover{background:#f2f3f5}.ds-pbtn:active{transform:scale(.97)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Ledger",
+    "overview": "The office works in this app all day, so the system is built to disappear around the money. Chrome is achromatic: a white canvas beside a pale blue-grey sidebar ground, near-black ink, grey for everything secondary, and hairlines instead of boxes. The only weight on any screen belongs to peso figures, set in medium Geist with their centavos raised and small, so a column of amounts reads like a printed ledger rather than a spreadsheet. The world follows the Mercury banking references the owner chose; nothing of the earlier navy-and-red admin look, IBM Plex type, card grids or rainbow badges survives.\n\nDensity is desk-grade: 14px body, 44px table rows, 40px controls everywhere (a client requirement). Staff open onto their own work, scan a list, click a row and read or act in a right-hand detail panel without losing the list. Colour is spent only where it means something: one data blue for the main chart line, timeline progress, name links and focus; one green for money coming in; pale status pills only on rows that need someone to act.\n\nThe dark theme is true neutral, not navy: elevation by lightness (#0a0a0a sidebar, #0f0f0f canvas, #161616 cards, #1b1b1b popovers), the same single blue lifted for contrast.",
+    "keyCharacteristics": [
+      "Achromatic chrome; ink carries the money, one blue carries the data.",
+      "Raised, small centavos on every amount; tabular figures everywhere.",
+      "Hairline-split summary strips, never boxed KPI cards.",
+      "Flat at rest; shadows exist only on overlays.",
+      "Every row opens a right-side detail panel; full pages only for the client profile and new loan.",
+      "One family (Geist) at three weights in practice: 400, 500, and 600 for the logo monogram only."
+    ],
+    "rules": [
+      {
+        "name": "The One Blue Rule",
+        "body": "There is exactly one chromatic accent in the chrome, Ledger Blue, and it marks data and links, never decoration. A second blue, a tinted sidebar or a coloured header is off-system.",
+        "section": "colors"
+      },
+      {
+        "name": "The Action-Only Colour Rule",
+        "body": "Status colour appears only where someone must act: amber for \"For approval\" and arrears, red for past due, cancelled and not balanced, green for \"Approved, to release\" and updated. Settled states (Released, current, dormant) are plain grey text or a neutral pill.",
+        "section": "colors"
+      },
+      {
+        "name": "The Plus-Sign Green Rule",
+        "body": "Green means money arriving and always travels with a \"+\". It is never a success colour for buttons or banners.",
+        "section": "colors"
+      },
+      {
+        "name": "The Raised Centavos Rule",
+        "body": "Every peso amount renders through the money component: pesos at the line's size, centavos at max(0.64em, 11px), raised 0.42em, never below the 11px floor. Amounts never wrap. A bare \"1,234.56\" string in a figure position is off-system.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Family Rule",
+        "body": "Geist sets the whole product, IDs included (loan IDs and OR numbers are Geist tabular, not mono). Geist Mono is held back for literal, type-this-exactly strings.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "Headers, labels, tabs and buttons are sentence case at 12-14px. No uppercase tracking labels.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Not Box Rule",
+        "body": "Group figures with hairlines and whitespace, not containers. A row of bordered KPI cards is off-system.",
+        "section": "layout"
+      },
+      {
+        "name": "The List Stays Rule",
+        "body": "Clicking or pressing Enter on a row opens its detail on the right (420px); the list stays put underneath. Only the client profile and the new-loan form are full pages.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat At Rest Rule",
+        "body": "Nothing in the page plane carries a shadow; if it does not overlay the page, it does not cast one.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Circles Are People Rule",
+        "body": "Full rounding is reserved for people (and the tiny status dot). Buttons and pills stay rectangular-soft.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do render every peso amount with raised centavos at max(0.64em, 11px) and tabular figures.",
+      "Do keep every button and input 40px tall; reach for `sm` only to tighten padding.",
+      "Do open row detail in the 420px right panel, entering at 300ms on cubic-bezier(0.32, 0.72, 0, 1) and leaving at 150ms.",
+      "Do split summaries with #e6e6e6 hairlines and 40px of air instead of boxing them.",
+      "Do spend Ledger Blue (#1d5fbf) only on the main data series, name links, timeline progress and focus.",
+      "Do mark money coming in with green (#2e7d32) and a leading \"+\".",
+      "Do set settled states such as Released in plain grey text.",
+      "Do give every pressable control the 0.97 press at 160ms, with the reduced-motion fallback."
+    ],
+    "donts": [
+      "Don't bring back the retired navy sidebar, red accents or IBM Plex Sans.",
+      "Don't use rows of bordered KPI cards or card grids for figures.",
+      "Don't put a shadow on anything that sits in the page plane; shadows are for sheets and dialogs only.",
+      "Don't colour a status that needs no action.",
+      "Don't add a second accent hue, a tinted header or a gradient to the chrome.",
+      "Don't use uppercase tracked labels or eyebrow text above titles.",
+      "Don't round buttons or pills fully; full circles are for people."
+    ]
+  }
+}

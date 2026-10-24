@@ -4,7 +4,7 @@ import { ROUTE_SNAPSHOT_DATE } from '@/data/routeAccounts'
 import { daysBetween, useOpenLoans } from '@/state/portfolio'
 import { Page } from '@/components/layout'
 import { downloadCsv, ExportButtons, ReportTabs, ReportTitle } from '@/components/reports'
-import { PageHeader, SampleNote, StatCard } from '@/components/shared'
+import { PageHeader, SampleNote, StatCard, StatStrip } from '@/components/shared'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import {
@@ -71,12 +71,12 @@ export function Aging() {
       <ReportTabs />
       <ReportFilters filters={filters} dates={false} />
 
-      <div className="no-print grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <StatStrip>
         <StatCard label="Open accounts" value={rows.length} />
         <StatCard label="Outstanding balance" value={formatPeso(total)} />
         <StatCard label="Over 90 days" value={formatPeso(atRisk)} />
         <StatCard label="Portfolio at risk" value={`${total ? ((atRisk / total) * 100).toFixed(2) : '0.00'}%`} />
-      </div>
+      </StatStrip>
 
       <Card aria-label="Report preview" className="print:ring-0">
         <CardContent className="flex flex-col gap-6">
@@ -85,7 +85,7 @@ export function Aging() {
             title={`AGING OF RECEIVABLES as of ${formatMdy(asOf)}`}
             subtitle={filters.collectorLine}
           />
-          <div className="rounded-lg border">
+          <div className="-mx-3">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -131,7 +131,7 @@ export function Aging() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg border">
+          <div className="-mx-3">
             <Table>
               <TableHeader>
                 <TableRow>

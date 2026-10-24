@@ -31,6 +31,7 @@ export function ClientSearchDialog({
       onOpenChange={onOpenChange}
       title="Find client"
       description="Search by name, client ID or loan no."
+      className="sm:max-w-xl"
     >
       <Command>
         <CommandInput placeholder="Name, client ID or loan no." />

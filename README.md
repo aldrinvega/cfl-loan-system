@@ -2,8 +2,10 @@
 
 The loan system built entirely from shadcn/ui components (Sidebar, Card, Table, Tabs, Field,
 InputGroup, Badge, Alert, Item, Avatar, Progress, Kbd, Empty, Breadcrumb, Command, Dialog, Select,
-Switch, Chart, Sonner). The shadcn CSS variables are set to the design README tokens, the font is
-IBM Plex Sans, and dark mode is kept (switch it from the user menu at the bottom of the sidebar).
+Switch, Chart, Sonner), redesigned after the Mercury banking app: a light shell, quiet tables,
+amounts with small raised centavos, and a detail panel that opens when you click a row. The font
+is Geist; dark mode is kept (switch it from the account menu at the top right). The design system
+is written up in `DESIGN.md`; the product facts it serves are in `PRODUCT.md`.
 This is the version being developed; `../app` is no longer updated.
 All data is fictional sample data held in memory; a reload resets it.
 
@@ -14,7 +16,7 @@ Every push to `main` runs the tests, builds, and republishes it through GitHub A
 ```sh
 npm install
 npm run dev      # http://localhost:5173
-npm test         # 30 tests
+npm test         # 32 tests
 npm run build
 ```
 

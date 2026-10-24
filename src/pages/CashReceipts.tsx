@@ -10,9 +10,11 @@ import { branches, collectors } from '@/data/sample'
 import type { Receipt } from '@/data/types'
 import { Page } from '@/components/layout'
 import { downloadCsv, ExportButtons, ReportTabs, ReportTitle, SimpleSelect } from '@/components/reports'
-import { BalanceAlert, CancelledBadge, PageHeader, SampleNote, StatCard } from '@/components/shared'
+import { BalanceAlert, CancelledBadge, PageHeader, SampleNote, StatCard, StatStrip } from '@/components/shared'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { DetailPanel, Facts, LeadFigure, PanelSection, Person, rowOpens, stopRow } from '@/components/ledger'
+import { Money } from '@/components/money'
 import {
   Dialog,
   DialogContent,
@@ -62,6 +64,7 @@ export function CashReceipts() {
   const [applied, setApplied] = useState(initial)
   const [dateError, setDateError] = useState<string>()
   const [cancelling, setCancelling] = useState<Receipt | null>(null)
+  const [openNo, setOpenNo] = useState<string | null>(null)
 
   const branchOptions = [
     ...(user.branchId === null ? [{ value: 'all', label: 'All branches' }] : []),
@@ -138,10 +141,10 @@ export function CashReceipts() {
       />
       <ReportTabs />
 
-      <Card className="no-print">
-        <CardContent>
+      <div className="no-print">
+        <div>
           <form
-            className="flex flex-wrap items-end gap-4"
+            className="flex flex-wrap items-end gap-3"
             onSubmit={(e) => {
               e.preventDefault()
               run()
@@ -187,25 +190,25 @@ export function CashReceipts() {
                 ]}
               />
             </Field>
-            <Button type="submit">Run report</Button>
+            <Button type="submit" variant="outline">Run report</Button>
             {dateError && <FieldError className="basis-full">{dateError}</FieldError>}
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <div className="no-print grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <StatStrip>
         <StatCard label="Receipts posted" value={totals.posted} />
         <StatCard label="Cancelled" value={totals.cancelled} />
         <StatCard label="Cash received" value={formatPeso(totals.cash)} />
         <StatCard label="Loans Receivable" value={formatPeso(totals.loansReceivable)} />
         <StatCard label="Safekeeping" value={formatPeso(totals.safekeeping)} />
-      </div>
+      </StatStrip>
 
       <Card aria-label="Report preview" className="print:ring-0">
         <CardContent className="flex flex-col gap-6">
           <ReportTitle branch={branchName} title={`CASH RECEIPTS for ${range}`} subtitle={collectorLine} />
 
-          <div className="rounded-lg border">
+          <div>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -222,18 +225,26 @@ export function CashReceipts() {
                 {rows.map((r) => {
                   const isCancelled = r.status === 'cancelled'
                   return (
-                    <TableRow key={r.no} className={cn(isCancelled && 'text-muted-foreground')}>
-                      <TableCell>{formatMdy(r.date)}</TableCell>
-                      <TableCell>{r.no}</TableCell>
+                    <TableRow key={r.no} {...rowOpens(() => setOpenNo(r.no), openNo === r.no)}>
+                      <TableCell className={cn(isCancelled && 'text-muted-foreground')}>{formatMdy(r.date)}</TableCell>
+                      <TableCell className={cn(isCancelled && 'text-muted-foreground')}>{r.no}</TableCell>
                       <TableCell>
-                        {isCancelled && <CancelledBadge className="mr-2" />}
-                        {nameOf(r.clientId)}
+                        <span className="flex items-center gap-2">
+                          <span className={cn('font-medium', isCancelled && 'text-muted-foreground')}>{nameOf(r.clientId)}</span>
+                          {isCancelled && <CancelledBadge />}
+                        </span>
                       </TableCell>
-                      <TableCell className="text-right">{formatAmount(r.amount)}</TableCell>
-                      <TableCell className="text-right">{formatAmount(r.loansReceivable)}</TableCell>
-                      <TableCell className="text-right">{formatAmount(r.safekeeping)}</TableCell>
+                      <TableCell className={cn('text-right', isCancelled && 'text-muted-foreground line-through decoration-muted-foreground/60')}>
+                        <Money value={r.amount} peso={false} positive={!isCancelled} />
+                      </TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        <Money value={r.loansReceivable} peso={false} />
+                      </TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        <Money value={r.safekeeping} peso={false} />
+                      </TableCell>
                       {canCancel && (
-                        <TableCell className="no-print py-0">
+                        <TableCell className="no-print py-0" {...stopRow}>
                           {!isCancelled && (
                             <Tooltip>
                               <TooltipTrigger
@@ -241,6 +252,7 @@ export function CashReceipts() {
                                   <Button
                                     variant="ghost"
                                     size="icon-sm"
+                                    className="text-muted-foreground opacity-0 group-hover/row:opacity-100 group-focus-visible/row:opacity-100 focus-visible:opacity-100"
                                     aria-label={`Cancel receipt ${r.no}`}
                                     onClick={() => setCancelling(r)}
                                   />
@@ -267,9 +279,15 @@ export function CashReceipts() {
               <TableFooter>
                 <TableRow>
                   <TableCell colSpan={3}>{totalsLabel}</TableCell>
-                  <TableCell className="text-right">{formatAmount(totals.cash)}</TableCell>
-                  <TableCell className="text-right">{formatAmount(totals.loansReceivable)}</TableCell>
-                  <TableCell className="text-right">{formatAmount(totals.safekeeping)}</TableCell>
+                  <TableCell className="text-right">
+                    <Money value={totals.cash} peso={false} positive />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Money value={totals.loansReceivable} peso={false} />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Money value={totals.safekeeping} peso={false} />
+                  </TableCell>
                   {canCancel && <TableCell className="no-print" />}
                 </TableRow>
               </TableFooter>
@@ -282,15 +300,92 @@ export function CashReceipts() {
             {formatPeso(totals.safekeeping)}
           </BalanceAlert>
         </CardContent>
-        <CardFooter className="gap-12 border-t text-sm">
+        <CardFooter className="flex-wrap gap-x-12 gap-y-6 border-t text-sm">
           <Signature label="Prepared by" name={`${user.name}, ${roleLabel}`} />
           <Signature label="Checked by" name="Branch manager" />
         </CardFooter>
       </Card>
       <SampleNote />
 
+      <ReceiptPanel
+        receipt={rows.find((r) => r.no === openNo) ?? null}
+        borrower={(r) => nameOf(r.clientId)}
+        onClose={() => setOpenNo(null)}
+        onCancel={canCancel ? (r) => setCancelling(r) : undefined}
+      />
       <CancelReceiptDialog receipt={cancelling} onClose={() => setCancelling(null)} />
     </Page>
+  )
+}
+
+/** One receipt: the amount, how it came in, where it went, and who collected it. */
+function ReceiptPanel({
+  receipt,
+  borrower,
+  onClose,
+  onCancel,
+}: {
+  receipt: Receipt | null
+  borrower: (r: Receipt) => string
+  onClose: () => void
+  onCancel?: (r: Receipt) => void
+}) {
+  const r = receipt
+  const isCancelled = r?.status === 'cancelled'
+  return (
+    <DetailPanel
+      open={r !== null}
+      onClose={onClose}
+      title={r ? `OR ${r.no}` : ''}
+      description={r ? `${formatMdy(r.date)} · Collector ${collectorLabel(r.collectorId)}` : ''}
+      footer={
+        r && onCancel && !isCancelled && (
+          <Button variant="destructive" size="sm" onClick={() => onCancel(r)}>
+            Cancel this receipt
+          </Button>
+        )
+      }
+    >
+      {r && (
+        <>
+          <Person name={borrower(r)} sub={`${r.clientId} · ${r.loanId}`} size="lg" />
+          <LeadFigure sub={isCancelled ? `Cancelled: ${r.cancelReason ?? 'no reason given'}` : 'Cash received'}>
+            <Money value={r.amount} positive={!isCancelled} className={cn(isCancelled && 'text-muted-foreground line-through')} />
+          </LeadFigure>
+          <PanelSection title="Where it went">
+            <Facts
+              rows={[
+                ['Loans Receivable', <Money value={r.loansReceivable} />],
+                ['Safekeeping', <Money value={r.safekeeping} />],
+                ...(r.penaltyPaid ? ([['Of which penalties', <Money value={r.penaltyPaid} />]] as [string, React.ReactNode][]) : []),
+                ...(r.rebate ? ([['Rebate (not cash)', <Money value={r.rebate} />]] as [string, React.ReactNode][]) : []),
+              ]}
+            />
+          </PanelSection>
+          {(r.cash !== undefined || (r.checks?.length ?? 0) > 0) && (
+            <PanelSection title="How it came in">
+              <Facts
+                rows={[
+                  ['Cash', <Money value={r.cash ?? 0} />],
+                  ...(r.checks ?? []).map(
+                    (c): [string, React.ReactNode] => [`Check ${c.no}, ${c.bank}`, <Money value={c.amount} />],
+                  ),
+                ]}
+              />
+            </PanelSection>
+          )}
+          <PanelSection title="Receipt">
+            <Facts
+              rows={[
+                ['Payment date', formatMdy(r.date)],
+                ['Effective date', formatMdy(r.effectiveDate ?? r.date)],
+                ['Particulars', r.particulars || '–'],
+              ]}
+            />
+          </PanelSection>
+        </>
+      )}
+    </DetailPanel>
   )
 }
 

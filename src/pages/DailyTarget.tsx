@@ -8,7 +8,7 @@ import { ROUTE_SNAPSHOT_DATE, routeAccounts } from '@/data/routeAccounts'
 import { LOAN_STATUSES, type LoanStatus, type RouteAccount } from '@/data/types'
 import { Page } from '@/components/layout'
 import { downloadCsv, ExportButtons, ReportTabs, ReportTitle, SimpleSelect } from '@/components/reports'
-import { PageHeader, SampleNote, StatCard, StatusBadge } from '@/components/shared'
+import { PageHeader, SampleNote, StatCard, StatStrip, StatusBadge } from '@/components/shared'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
@@ -117,8 +117,8 @@ export function DailyTarget() {
       />
       <ReportTabs />
 
-      <Card className="no-print">
-        <CardContent>
+      <div className="no-print">
+        <div>
           <form
             className="flex flex-wrap items-end gap-4"
             onSubmit={(e) => {
@@ -164,19 +164,19 @@ export function DailyTarget() {
                 ]}
               />
             </Field>
-            <Button type="submit">Run report</Button>
+            <Button type="submit" variant="outline">Run report</Button>
             {dateError && <FieldError className="basis-full">{dateError}</FieldError>}
           </form>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <div className="no-print grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <StatStrip>
         <StatCard label="Accounts on route" value={accounts.length} />
         <StatCard label="Outstanding balance" value={formatPeso(grand.balance)} />
         <StatCard label="Collectible today" value={formatPeso(grand.collectible)} />
         <StatCard label="Paid ahead" value={accountsLabel(accounts.filter((a) => a.dueToday < 0).length)} />
         <StatCard label="Potential rebate" value={formatPeso(grand.potentialRebate)} />
-      </div>
+      </StatStrip>
 
       <Card aria-label="Report preview" className="print:ring-0">
         <CardContent className="flex flex-col gap-6">
@@ -186,7 +186,7 @@ export function DailyTarget() {
             subtitle={`For ${formatLong(date)} · ${collectorLine}`}
           />
 
-          <div className="rounded-lg border">
+          <div className="-mx-3">
             <Table className="min-w-[1180px] text-[13px]">
               <TableHeader>
                 <TableRow>

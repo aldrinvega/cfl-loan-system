@@ -3,12 +3,13 @@ import { useSearchParams } from 'react-router-dom'
 import { Check, CircleAlert, Plus, Search, Trash2, UserRoundSearch } from 'lucide-react'
 import { toast } from 'sonner'
 import { formatMdy } from '@/lib/dates'
-import { formatAmount, formatPeso } from '@/lib/money'
+import { formatPeso } from '@/lib/money'
 import { breakdownTotal, type Breakdown, type BreakdownMode } from '@/lib/cashiering'
 import { buildLedger, safekeepingFor, splitTotal, summarizeLoan } from '@/lib/ledger'
 import { cn } from '@/lib/utils'
 import { collectors, penalties } from '@/data/sample'
 import type { Collector } from '@/data/types'
+import { Money } from '@/components/money'
 import { Page } from '@/components/layout'
 import { ButtonLink } from '@/components/button-link'
 import { MoneyInput } from '@/components/MoneyInput'
@@ -164,7 +165,7 @@ export function EncodePayment() {
 
       <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
         {form.account && form.breakdown ? (
-          <Card className="ring-2 ring-primary/40">
+          <Card className="border-foreground/25">
             <form
               ref={paymentRef}
               aria-label="Payment"
@@ -176,9 +177,8 @@ export function EncodePayment() {
               }}
             >
               <CardHeader>
-                <CardDescription>3. Payment</CardDescription>
                 <CardTitle className="text-lg">
-                  {form.account.loan.id} · {clientName(form.account.client).toUpperCase()}
+                  3. Payment · {form.account.loan.id} · {clientName(form.account.client)}
                 </CardTitle>
                 <CardDescription>
                   {form.account.client.address} · Collector {collectorLabel(form.account.client.collectorId)}
@@ -468,8 +468,8 @@ function AccountPicker({
         </CardAction>
       </CardHeader>
       <CardContent>
-        <div className="max-h-[420px] overflow-auto rounded-lg border">
-          <Table>
+        <div className="max-h-[420px] overflow-auto">
+          <Table className="[&_td]:px-2 [&_th]:px-2">
             <TableHeader className="sticky top-0 z-10 bg-card">
               <TableRow>
                 <TableHead>Loan ID</TableHead>
@@ -498,16 +498,16 @@ function AccountPicker({
                         onSelect(a.loan.id)
                       }
                     }}
-                    className={cn('cursor-pointer', isSelected && 'font-medium')}
+                    className="cursor-pointer"
                   >
                     <TableCell>{a.loan.id}</TableCell>
-                    <TableCell>{clientName(a.client).toUpperCase()}</TableCell>
-                    <TableCell className="text-right">{formatAmount(a.loan.principal)}</TableCell>
+                    <TableCell className="font-medium">{clientName(a.client)}</TableCell>
+                    <TableCell className="text-right"><Money value={a.loan.principal} peso={false} /></TableCell>
                     <TableCell>{formatMdy(a.loan.releasedOn)}</TableCell>
                     <TableCell>{formatMdy(a.summary.maturesOn)}</TableCell>
                     <TableCell>{a.loan.frequencyDays === 7 ? 'Weekly' : 'Daily'}</TableCell>
                     <TableCell>{a.status === 'arrears' ? <StatusBadge status="arrears" /> : 'Current'}</TableCell>
-                    <TableCell className="text-right">{formatAmount(splitTotal(a.split.due))}</TableCell>
+                    <TableCell className="text-right"><Money value={splitTotal(a.split.due)} peso={false} /></TableCell>
                   </TableRow>
                 )
               })}
@@ -535,7 +535,7 @@ function CashAndChecks({ form }: { form: Form }) {
   return (
     <FieldSet className="min-w-0">
       <FieldLegend variant="label">Cash and checks received</FieldLegend>
-      <div className="overflow-x-auto rounded-lg border">
+      <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -562,7 +562,7 @@ function CashAndChecks({ form }: { form: Form }) {
                   className="text-right font-semibold"
                 />
               </TableCell>
-              <TableCell className="text-right text-muted-foreground">{formatAmount(checkTotal)}</TableCell>
+              <TableCell className="text-right text-muted-foreground"><Money value={checkTotal} peso={false} /></TableCell>
               <TableCell colSpan={5} className="text-muted-foreground">
                 {form.checks.length ? `${form.checks.length} check${form.checks.length === 1 ? '' : 's'} below` : '–'}
               </TableCell>
@@ -612,12 +612,12 @@ function CashAndChecks({ form }: { form: Form }) {
         </Table>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Button type="button" variant="outline" size="sm" className="border-dashed" onClick={form.addCheck}>
+        <Button type="button" variant="outline" size="sm" onClick={form.addCheck}>
           <Plus data-icon="inline-start" />
           Add check
         </Button>
         <span className="text-sm text-muted-foreground">
-          Total received <span className="text-lg font-semibold text-foreground">{formatPeso(form.received)}</span>
+          Total received <span className="text-lg font-semibold text-foreground"><Money value={form.received} /></span>
         </span>
       </div>
     </FieldSet>
@@ -646,12 +646,12 @@ function BreakdownCard({
   onSafekeeping: (v: number | null) => void
 }) {
   return (
-    <Card size="sm">
-      <CardHeader>
-        <CardTitle>Payment breakdown</CardTitle>
-        <CardDescription>Computed by the system, {modeLabel[mode]}</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-2 text-sm">
+    <section aria-label="Payment breakdown" className="flex flex-col gap-3 rounded-md bg-muted p-4">
+      <div className="flex flex-col gap-0.5">
+        <h3 className="text-sm font-medium">Payment breakdown</h3>
+        <p className="text-sm text-muted-foreground">Computed by the system, {modeLabel[mode]}</p>
+      </div>
+      <div className="flex flex-col gap-2 text-sm">
         <Line label="Amortization" value={breakdown.amortization} />
         <Line label="Computed penalty" value={breakdown.penalty} />
         <ManualLine id="other-penalty" label="Other penalty" value={otherPenalty} onChange={onOtherPenalty} />
@@ -660,11 +660,11 @@ function BreakdownCard({
         <Line label="Total" value={breakdownTotal(breakdown)} strong />
         <Separator />
         <Line label="Rebate (not cash)" value={breakdown.rebate} />
-        <p className="text-xs text-destructive">
+        <p className="text-xs text-muted-foreground">
           Other penalty and safekeeping are typed in from the collector's receipt, not computed by the system.
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   )
 }
 
@@ -694,7 +694,7 @@ function Line({ label, value, strong = false }: { label: string; value: number; 
   return (
     <div className={cn('flex justify-between gap-3', strong && 'font-semibold')}>
       <span className={cn(!strong && 'text-muted-foreground')}>{label}</span>
-      <span className="tabular-nums">{formatAmount(value)}</span>
+      <span className="tabular-nums"><Money value={value} peso={false} /></span>
     </div>
   )
 }
@@ -747,7 +747,7 @@ function MatchAlert({ breakdown, received, matches }: { breakdown: Breakdown; re
       <CircleAlert />
       <AlertDescription>
         Breakdown doesn't match the total received: {equation}, but {formatPeso(received)} was received (
-        {formatPeso(Math.abs(diff))} {diff > 0 ? 'short' : 'over'}).
+        <Money value={Math.abs(diff)} /> {diff > 0 ? 'short' : 'over'}).
       </AlertDescription>
     </Alert>
   )
@@ -757,9 +757,9 @@ function SplitRow({ label, split }: { label: string; split: { amortization: numb
   return (
     <TableRow>
       <TableCell>{label}</TableCell>
-      <TableCell className="text-right">{formatAmount(split.amortization)}</TableCell>
-      <TableCell className="text-right">{formatAmount(split.penalty)}</TableCell>
-      <TableCell className="text-right">{formatAmount(splitTotal(split))}</TableCell>
+      <TableCell className="text-right"><Money value={split.amortization} peso={false} /></TableCell>
+      <TableCell className="text-right"><Money value={split.penalty} peso={false} /></TableCell>
+      <TableCell className="text-right"><Money value={splitTotal(split)} peso={false} /></TableCell>
     </TableRow>
   )
 }
@@ -782,7 +782,7 @@ function AccountSummary({ account }: { account: RouteAccount }) {
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        <div className="rounded-lg border">
+        <div className="-mx-3">
           <Table>
             <TableHeader>
               <TableRow>
@@ -807,7 +807,7 @@ function AccountSummary({ account }: { account: RouteAccount }) {
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Safekeeping balance</span>
-          <span className="font-semibold">{formatPeso(safekeeping.balance)}</span>
+          <span className="font-semibold"><Money value={safekeeping.balance} /></span>
         </div>
       </CardContent>
     </Card>
@@ -832,7 +832,7 @@ function PaymentRecord({ account }: { account: RouteAccount }) {
         <CardDescription>Latest entries on {account.loan.id}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="rounded-lg border">
+        <div className="-mx-3">
           <Table>
             <TableHeader>
               <TableRow>
@@ -846,8 +846,8 @@ function PaymentRecord({ account }: { account: RouteAccount }) {
               {entries.map((e) => (
                 <TableRow key={`${e.reference}-${e.kind}`}>
                   <TableCell>{formatMdy(e.date)}</TableCell>
-                  <TableCell className="text-right">{formatAmount(e.charges)}</TableCell>
-                  <TableCell className="text-right">{formatAmount(e.payment)}</TableCell>
+                  <TableCell className="text-right"><Money value={e.charges} peso={false} /></TableCell>
+                  <TableCell className="text-right"><Money value={e.payment} peso={false} /></TableCell>
                   <TableCell>{reference(e)}</TableCell>
                 </TableRow>
               ))}

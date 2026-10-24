@@ -224,7 +224,7 @@ export function NewLoan() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="max-h-[560px] overflow-auto rounded-lg border">
+            <div className="max-h-[560px] overflow-auto rounded-md border">
               <Table>
                 <TableHeader className="sticky top-0 bg-card">
                   <TableRow>

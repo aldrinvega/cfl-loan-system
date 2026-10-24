@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom'
 import { useState, type ReactNode } from 'react'
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 import {
   BookOpen,
   CalendarClock,
@@ -22,6 +23,7 @@ import { booklets, collectors } from '@/data/sample'
 import { netProceeds } from '@/data/reportSamples'
 import { greetingFor, useNow } from '@/hooks/use-now'
 import { Page } from '@/components/layout'
+import { maybeMoney, Money } from '@/components/money'
 import { ButtonLink } from '@/components/button-link'
 import { CancelledBadge } from '@/components/shared'
 import { Badge } from '@/components/ui/badge'
@@ -36,7 +38,6 @@ import {
 } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart'
 import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item'
-import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { collectorLabel, useSession } from '@/state/session'
@@ -110,7 +111,7 @@ export function Dashboard() {
 
   return (
     <Page crumbs={['Dashboard']}>
-      <div className="@container/main flex flex-col gap-4 md:gap-6">
+      <div className="@container/main flex flex-col gap-6">
         <Greeting
           actions={
             isPresident ? (
@@ -207,7 +208,7 @@ export function Dashboard() {
         <CollectionsChart days={days} today={today} />
 
         <div className="grid gap-4 md:gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-          <Card>
+          <Card className={plane}>
             <CardHeader>
               <CardTitle>Due soon</CardTitle>
               <CardDescription>Installments due through {formatLong(addDays(today, 7))}, oldest first.</CardDescription>
@@ -216,7 +217,7 @@ export function Dashboard() {
               </CardAction>
             </CardHeader>
             <CardContent>
-              <div className="rounded-lg border">
+              <div className="-mx-3">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -231,7 +232,13 @@ export function Dashboard() {
                     {dueSoon.slice(0, 8).map((l) => (
                       <TableRow key={l.loanId}>
                         <TableCell>
-                          <div className="font-medium">{l.borrower}</div>
+                          {l.clientId ? (
+                            <Link to={`/clients/${l.clientId}`} className="font-medium text-link hover:underline">
+                              {l.borrower}
+                            </Link>
+                          ) : (
+                            <div className="font-medium">{l.borrower}</div>
+                          )}
                           <div className="text-xs text-muted-foreground">{l.loanId}</div>
                         </TableCell>
                         <TableCell>{collectorLabel(l.collectorId)}</TableCell>
@@ -244,7 +251,7 @@ export function Dashboard() {
                           )}
                           {l.due.on === today && <Badge variant="secondary" className="ml-2">Today</Badge>}
                         </TableCell>
-                        <TableCell className="text-right">{formatPeso(l.due.amount)}</TableCell>
+                        <TableCell className="text-right"><Money value={l.due.amount} /></TableCell>
                         {can('encodePayments') && (
                           <TableCell className="py-0 text-right">
                             {l.clientId && canSeeClient({ branchId: l.branchId, collectorId: l.collectorId }) && (
@@ -274,13 +281,13 @@ export function Dashboard() {
             )}
           </Card>
 
-          <Card>
+          <Card className={plane}>
             <CardHeader>
               <CardTitle>Needs attention</CardTitle>
               <CardDescription>Things to sort out before the day closes.</CardDescription>
             </CardHeader>
             <CardContent>
-              <ItemGroup className="gap-2">
+              <ItemGroup className="gap-0">
                 {can('encodePayments') && !todayTotals.balanced && (
                   <Attention icon={CircleAlert} tone="bad" title="Today's receipts don't balance" description="Cash received isn't equal to Loans Receivable + Safekeeping." to="/reports/cash-receipts" />
                 )}
@@ -321,7 +328,7 @@ export function Dashboard() {
         {!can('encodePayments') ? (
           <CollectorsThisWeek rows={thisWeek} />
         ) : (
-          <Card>
+          <Card className={plane}>
             <CardHeader>
               <CardTitle>Latest receipts</CardTitle>
               <CardDescription>{formatWeekdayLong(today)}</CardDescription>
@@ -330,7 +337,7 @@ export function Dashboard() {
               </CardAction>
             </CardHeader>
             <CardContent>
-              <div className="rounded-lg border">
+              <div className="-mx-3">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -347,13 +354,17 @@ export function Dashboard() {
                       <TableRow key={r.no} className={cn(r.status === 'cancelled' && 'text-muted-foreground')}>
                         <TableCell>{r.no}</TableCell>
                         <TableCell>
-                          {nameOf(r.clientId)}
+                          <Link to={`/clients/${r.clientId}`} className="text-link hover:underline">
+                            {nameOf(r.clientId)}
+                          </Link>
                           {r.status === 'cancelled' && <CancelledBadge className="ml-2" />}
                         </TableCell>
                         <TableCell>{collectorLabel(r.collectorId)}</TableCell>
-                        <TableCell className="text-right">{formatPeso(r.loansReceivable)}</TableCell>
-                        <TableCell className="text-right">{formatPeso(r.safekeeping)}</TableCell>
-                        <TableCell className="text-right font-medium">{formatPeso(r.amount)}</TableCell>
+                        <TableCell className="text-right"><Money value={r.loansReceivable} /></TableCell>
+                        <TableCell className="text-right"><Money value={r.safekeeping} /></TableCell>
+                        <TableCell className="text-right font-medium">
+                          <Money value={r.amount} positive={r.status === 'posted'} />
+                        </TableCell>
                       </TableRow>
                     ))}
                     {todayReceipts.length === 0 && (
@@ -375,56 +386,44 @@ export function Dashboard() {
   )
 }
 
-/** "Good morning, Mila" with a live clock and the open business day. */
+/** "Good morning, Mila" with a live clock and the open business day, set on the page like Mercury's "Welcome, Sam". */
 function Greeting({ actions }: { actions: ReactNode }) {
-  const { user, branchLabel, can } = useSession()
+  const { user, branchLabel } = useSession()
   const now = useNow()
-  const date = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-  const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' })
+  const date = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+  const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
   const businessDayDiffers = now.toLocaleDateString('en-CA') !== user.businessDate
 
   return (
-    <Card className="bg-linear-to-t from-primary/5 to-card shadow-xs dark:bg-card">
-      <CardHeader className="gap-2">
-        <CardDescription>
-          <time dateTime={now.toISOString()}>
-            {date} · <span className="tabular-nums">{time}</span>
-          </time>
-        </CardDescription>
-        <CardTitle className="text-2xl font-semibold tracking-tight @[640px]/main:text-3xl">
+    <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+      <div className="flex flex-col gap-1.5">
+        <h1 className="text-[28px] leading-tight font-medium tracking-[-0.02em]">
           {greetingFor(now)}, {user.firstName}
-        </CardTitle>
-        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-          <Badge variant="outline">
-            <span aria-hidden className="size-1.5 rounded-full bg-positive" />
-            {user.branchId === null ? 'Viewing all branches' : 'Day open'}
-          </Badge>
+        </h1>
+        <p className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+          <time dateTime={now.toISOString()} className="tabular-nums">
+            {date}, {time}
+          </time>
+          <span aria-hidden>·</span>
           <span>
-            {businessDayDiffers ? `Business day ${formatWeekdayLong(user.businessDate)}` : 'Business day is today'} ·{' '}
-            {branchLabel}
+            {businessDayDiffers ? `Business day ${formatWeekdayLong(user.businessDate)}` : 'Business day is today'}
           </span>
-        </div>
-        <CardAction className="no-print hidden items-center gap-2 self-center @[640px]/main:flex">{actions}</CardAction>
-      </CardHeader>
-      <CardFooter className="flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground">
-        <span className="flex items-center gap-1.5">
-          <KbdGroup><Kbd>Ctrl</Kbd><Kbd>K</Kbd></KbdGroup> Find a client
-        </span>
-        {can('encodePayments') && (
-          <span className="flex items-center gap-1.5">
-            <Kbd>F2</Kbd> on Encode payment to search
-          </span>
-        )}
-        <div className="flex gap-2 @[640px]/main:hidden">{actions}</div>
-      </CardFooter>
-    </Card>
+          <span aria-hidden>·</span>
+          <span>{user.branchId === null ? 'All branches' : branchLabel}</span>
+        </p>
+      </div>
+      <div className="no-print flex flex-wrap items-center gap-2">{actions}</div>
+    </div>
   )
 }
 
-/** The shadcn dashboard-01 section cards, laid out four across on wide screens. */
+/** Open-plane section: a titled block on the page, no frame (Mercury's home). */
+const plane = 'gap-4 rounded-none border-0 bg-transparent py-0 [--card-spacing:0px]'
+
+/** The headline figures as one strip split by hairlines, not a row of boxed cards. */
 function SectionCards({ children }: { children: ReactNode }) {
   return (
-    <div className="grid grid-cols-1 gap-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
+    <div className="grid border-y sm:grid-cols-2 xl:grid-cols-4 [&>*]:py-5 sm:[&>*:nth-child(even)]:border-l sm:[&>*:nth-child(even)]:pl-6 xl:[&>*:not(:first-child)]:border-l xl:[&>*:not(:first-child)]:pl-6 sm:[&>*]:pr-6 max-xl:[&>*:nth-child(n+3)]:border-t">
       {children}
     </div>
   )
@@ -451,34 +450,39 @@ function SectionCard({
 }) {
   const Icon = good === false ? TrendingDown : TrendingUp
   return (
-    <Card className="@container/card">
-      <CardHeader>
-        <CardDescription>{label}</CardDescription>
-        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">{value}</CardTitle>
-        <CardAction>
-          <Badge variant={good === false ? 'destructive' : 'outline'}>
-            {trend && <Icon data-icon="inline-start" />}
-            {badge}
-          </Badge>
-        </CardAction>
-      </CardHeader>
-      <CardFooter className="flex-col items-start gap-1.5 text-sm">
-        <div className="line-clamp-1 font-medium">{headline}</div>
-        <div className="text-muted-foreground">{note}</div>
-      </CardFooter>
-    </Card>
+    <div className="flex min-w-0 flex-col gap-3">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-[13px] text-muted-foreground">{label}</span>
+        <span
+          className={cn(
+            'flex flex-none items-center gap-1 text-xs whitespace-nowrap',
+            good === false ? 'font-medium text-foreground' : 'text-muted-foreground',
+          )}
+        >
+          {trend && <Icon className="size-3" />}
+          {badge}
+        </span>
+      </div>
+      <span className="text-[26px] leading-none font-medium tracking-[-0.02em] tabular-nums">{maybeMoney(value)}</span>
+      <div className="flex flex-col gap-0.5 text-sm">
+        <span>{headline}</span>
+        <span className="text-[13px] text-muted-foreground">{note}</span>
+      </div>
+    </div>
   )
 }
 
 const chartConfig = {
-  collected: { label: 'Collected', color: 'var(--primary)' },
-  target: { label: 'Target', color: 'var(--muted-foreground)' },
+  collected: { label: 'Collected', color: 'var(--chart-4)' },
+  target: { label: 'Target', color: 'var(--chart-2)' },
 } satisfies ChartConfig
 
 const ranges = { '7d': 7, '30d': 30, all: 90 } as const
 type Range = keyof typeof ranges
 
-/** The shadcn dashboard-01 interactive area chart, showing collections against target. */
+const pesoTick = (v: number) => (v >= 1000 ? `₱${(v / 1000).toLocaleString('en-PH', { maximumFractionDigits: 1 })}k` : `₱${v}`)
+
+/** Collections against target: the collected line in the one data blue, the target dashed in grey. */
 function CollectionsChart({ days, today }: { days: ReturnType<typeof useCollectionDays>; today: IsoDate }) {
   const [range, setRange] = useState<Range>('30d')
   const since = addDays(today, -ranges[range])
@@ -489,12 +493,18 @@ function CollectionsChart({ days, today }: { days: ReturnType<typeof useCollecti
   })
 
   return (
-    <Card className="@container/card">
+    <Card className={cn(plane, '@container/card')}>
       <CardHeader>
         <CardTitle>Collections vs. target</CardTitle>
-        <CardDescription>
-          <span className="hidden @[540px]/card:block">Cash collected each working day against the route target</span>
-          <span className="@[540px]/card:hidden">Collected vs. target</span>
+        <CardDescription className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span className="flex items-center gap-1.5">
+            <span aria-hidden className="h-0.5 w-3.5 rounded-full bg-chart-4" />
+            Collected each working day
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span aria-hidden className="h-0 w-3.5 border-t-[1.5px] border-dashed border-chart-2" />
+            Route target
+          </span>
         </CardDescription>
         <CardAction>
           <ToggleGroup
@@ -510,16 +520,18 @@ function CollectionsChart({ days, today }: { days: ReturnType<typeof useCollecti
           </ToggleGroup>
         </CardAction>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
-          <AreaChart data={data}>
-            <defs>
-              <linearGradient id="fillCollected" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--color-collected)" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="var(--color-collected)" stopOpacity={0.1} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid vertical={false} />
+      <CardContent className="pt-2">
+        <ChartContainer config={chartConfig} className="aspect-auto h-[240px] w-full">
+          <LineChart data={data} margin={{ left: 0, right: 8, top: 8 }}>
+            <CartesianGrid vertical={false} stroke="var(--border)" />
+            <YAxis
+              width={52}
+              tickLine={false}
+              axisLine={false}
+              tickMargin={6}
+              tickCount={4}
+              tickFormatter={pesoTick}
+            />
             <XAxis
               dataKey="date"
               tickLine={false}
@@ -529,25 +541,28 @@ function CollectionsChart({ days, today }: { days: ReturnType<typeof useCollecti
               tickFormatter={(value: string) => formatShort(value)}
             />
             <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent labelFormatter={(value) => formatShort(String(value))} indicator="dot" />}
+              cursor={{ stroke: 'var(--muted-foreground)', strokeDasharray: '3 3' }}
+              content={<ChartTooltipContent labelFormatter={(value) => formatShort(String(value))} indicator="line" />}
             />
-            <Area
+            <Line
               dataKey="target"
-              type="monotone"
-              fill="none"
+              type="linear"
               stroke="var(--color-target)"
+              strokeWidth={1.5}
               strokeDasharray="4 4"
+              dot={false}
               isAnimationActive={false}
             />
-            <Area
+            <Line
               dataKey="collected"
-              type="monotone"
-              fill="url(#fillCollected)"
+              type="linear"
               stroke="var(--color-collected)"
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 4 }}
               isAnimationActive={false}
             />
-          </AreaChart>
+          </LineChart>
         </ChartContainer>
       </CardContent>
     </Card>
@@ -568,7 +583,7 @@ function Attention({
   tone?: 'good' | 'bad'
 }) {
   return (
-    <Item variant="outline" size="sm">
+    <Item size="sm" className="rounded-none border-0 border-b border-rule px-0 last:border-b-0">
       <ItemMedia
         variant="icon"
         className={cn(tone === 'bad' && 'bg-destructive/10 text-destructive', tone === 'good' && 'text-positive')}
@@ -604,7 +619,7 @@ function CollectorsThisWeek({ rows }: { rows: ReturnType<typeof useCollectionDay
     // Routes with nothing scheduled this week would only read as 0%.
     .filter((r) => r.target > 0)
   return (
-    <Card>
+    <Card className={plane}>
       <CardHeader>
         <CardTitle>Collectors this week</CardTitle>
         <CardDescription>Collected against target, Monday to today.</CardDescription>
@@ -616,7 +631,7 @@ function CollectorsThisWeek({ rows }: { rows: ReturnType<typeof useCollectionDay
         </CardAction>
       </CardHeader>
       <CardContent>
-        <div className="rounded-lg border">
+        <div className="-mx-3">
           <Table>
             <TableHeader>
               <TableRow>
@@ -630,8 +645,8 @@ function CollectorsThisWeek({ rows }: { rows: ReturnType<typeof useCollectionDay
               {routes.map((r) => (
                 <TableRow key={r.collector.id}>
                   <TableCell className="font-medium">{collectorLabel(r.collector.id)}</TableCell>
-                  <TableCell className="text-right">{formatPeso(r.target)}</TableCell>
-                  <TableCell className="text-right">{formatPeso(r.collected)}</TableCell>
+                  <TableCell className="text-right"><Money value={r.target} /></TableCell>
+                  <TableCell className="text-right"><Money value={r.collected} /></TableCell>
                   <TableCell className="text-right">
                     <Badge variant={r.efficiency < 80 ? 'destructive' : 'secondary'}>{r.efficiency.toFixed(1)}%</Badge>
                   </TableCell>

@@ -1,61 +1,148 @@
-import { Fragment, useEffect, useState, type ReactNode } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
-import { formatWeekdayLong } from '@/lib/dates'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useTheme } from 'next-themes'
+import { FilePlus2, LogOut, Moon, ReceiptText, Search, Sun } from 'lucide-react'
+import { formatWeekdayShortYear } from '@/lib/dates'
+import { useAuth } from '@/state/auth'
 import { useSession } from '@/state/session'
 import { AppSidebar } from '@/components/app-sidebar'
+import { ButtonLink } from '@/components/button-link'
 import { ClientSearchDialog } from '@/components/client-search'
-import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
-function SiteHeader({ crumbs }: { crumbs: string[] }) {
-  const { user } = useSession()
+const SearchContext = createContext<() => void>(() => {})
+
+function AccountMenu() {
+  const { user, branchLabel, roleLabel } = useSession()
+  const { signOut } = useAuth()
+  const navigate = useNavigate()
+  const { resolvedTheme, setTheme } = useTheme()
   return (
-    <header className="no-print flex h-14 shrink-0 items-center gap-2 border-b px-4">
-      <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="mr-2 data-vertical:h-4 data-vertical:self-auto" />
-      <Breadcrumb>
-        <BreadcrumbList>
-          {crumbs.map((crumb, i) => (
-            <Fragment key={crumb}>
-              {i > 0 && <BreadcrumbSeparator />}
-              <BreadcrumbItem>
-                {i === crumbs.length - 1 ? <BreadcrumbPage>{crumb}</BreadcrumbPage> : crumb}
-              </BreadcrumbItem>
-            </Fragment>
-          ))}
-        </BreadcrumbList>
-      </Breadcrumb>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button variant="ghost" size="icon" className="rounded-full" aria-label={`Account: ${user.name}`} />
+        }
+      >
+        <Avatar className="size-8">
+          <AvatarFallback className="bg-sidebar-accent text-xs font-medium text-foreground">{user.initials}</AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>
+            <div className="font-medium text-foreground">
+              {user.firstName} {user.name.split(' ').at(-1)}
+            </div>
+            <div className="text-xs font-normal">
+              @{user.username} · {roleLabel}, {branchLabel}
+            </div>
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}>
+          {resolvedTheme === 'dark' ? <Sun /> : <Moon />}
+          {resolvedTheme === 'dark' ? 'Light mode' : 'Dark mode'}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => {
+            signOut()
+            navigate('/login', { replace: true })
+          }}
+        >
+          <LogOut />
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+/** The role's most frequent job, one click away from every screen (Mercury's "Move Money"). */
+function PrimaryJob() {
+  const { can } = useSession()
+  const { pathname } = useLocation()
+  if (can('encodePayments') && !pathname.startsWith('/payments') && pathname !== '/home')
+    return (
+      <ButtonLink variant="outline" className="max-sm:size-10 max-sm:px-0" to="/payments/new">
+        <ReceiptText data-icon="inline-start" />
+        <span className="max-sm:sr-only">Encode payment</span>
+      </ButtonLink>
+    )
+  if (can('fileLoans') && pathname !== '/loans/new')
+    return (
+      <ButtonLink variant="outline" className="max-sm:size-10 max-sm:px-0" to="/loans/new">
+        <FilePlus2 data-icon="inline-start" />
+        <span className="max-sm:sr-only">New loan</span>
+      </ButtonLink>
+    )
+  return null
+}
+
+function SiteHeader() {
+  const { user } = useSession()
+  const openSearch = useContext(SearchContext)
+  return (
+    <header className="no-print sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 bg-background px-4 md:px-8">
+      <SidebarTrigger className="-ml-1 text-muted-foreground md:hidden" />
+      <button
+        type="button"
+        onClick={openSearch}
+        aria-label="Search clients, loans, IDs"
+        className="flex h-10 w-10 flex-none items-center justify-center gap-2.5 rounded-md border min-w-0 sm:w-full sm:max-w-md sm:flex-1 sm:justify-start bg-background px-3 text-sm text-muted-foreground transition-colors duration-150 hover:border-input focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/20 focus-visible:outline-none"
+      >
+        <Search className="size-4 shrink-0" />
+        <span className="hidden truncate sm:inline">Search clients, loans, IDs</span>
+        <KbdGroup className="ml-auto hidden sm:inline-flex">
+          <Kbd>Ctrl</Kbd>
+          <Kbd>K</Kbd>
+        </KbdGroup>
+      </button>
       <div className="ml-auto flex items-center gap-3">
-        <span className="hidden text-sm text-muted-foreground sm:inline">
-          {formatWeekdayLong(user.businessDate)}
+        <span className="hidden items-center gap-2 text-sm whitespace-nowrap text-muted-foreground lg:flex">
+          {user.branchId === null ? (
+            'All branches'
+          ) : (
+            <>
+              <span aria-hidden className="size-1.5 rounded-full bg-positive" />
+              Day open
+            </>
+          )}
+          <span aria-hidden>·</span>
+          {formatWeekdayShortYear(user.businessDate)}
         </span>
-        {user.branchId === null ? (
-          <Badge variant="secondary">Viewing all branches</Badge>
-        ) : (
-          <Badge variant="outline">
-            <span aria-hidden className="size-1.5 rounded-full bg-positive" />
-            Day open
-          </Badge>
-        )}
+        <PrimaryJob />
+        <AccountMenu />
       </div>
     </header>
   )
 }
 
-/** Header plus padded page body used by every desktop screen. */
+/** Top bar plus the page body used by every desktop screen. `crumbs` names the page for the tab title. */
 export function Page({ crumbs, children }: { crumbs: string[]; children: ReactNode }) {
+  const title = crumbs.at(-1)
+  useEffect(() => {
+    document.title = title ? `${title} · Cash Flow Lending` : 'Cash Flow Lending'
+  }, [title])
   return (
     <>
-      <SiteHeader crumbs={crumbs} />
-      <div className="flex flex-1 flex-col gap-6 p-4 md:p-6 print:p-0">{children}</div>
+      <SiteHeader />
+      <div className="mx-auto flex w-full max-w-[1360px] min-w-0 flex-1 flex-col gap-6 px-4 pt-4 pb-10 md:px-8 print:p-0 [&>*]:min-w-0">
+        {children}
+      </div>
     </>
   )
 }
@@ -77,16 +164,18 @@ export function DesktopLayout() {
   }, [])
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <Outlet />
-      </SidebarInset>
-      <ClientSearchDialog
-        open={searchOpen}
-        onOpenChange={setSearchOpen}
-        onSelect={(client) => navigate(`/clients/${client.id}`)}
-      />
-    </SidebarProvider>
+    <SearchContext.Provider value={() => setSearchOpen(true)}>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <Outlet />
+        </SidebarInset>
+        <ClientSearchDialog
+          open={searchOpen}
+          onOpenChange={setSearchOpen}
+          onSelect={(client) => navigate(`/clients/${client.id}`)}
+        />
+      </SidebarProvider>
+    </SearchContext.Provider>
   )
 }

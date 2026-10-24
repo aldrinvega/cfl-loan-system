@@ -3,10 +3,10 @@ import { Check, CircleAlert } from 'lucide-react'
 import type { LoanStatus } from '@/data/types'
 import { STATUS_LABELS } from '@/lib/dailyTarget'
 import { cn } from '@/lib/utils'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { maybeMoney } from '@/components/money'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
+/** The page's title row: a noun title, one plain line under it, and the page's actions on the right. */
 export function PageHeader({
   title,
   description,
@@ -17,9 +17,9 @@ export function PageHeader({
   actions?: ReactNode
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+    <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+      <div className="flex min-w-0 flex-col gap-1">
+        <h1 className="text-2xl font-medium tracking-[-0.02em]">{title}</h1>
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
       {actions && <div className="no-print flex flex-wrap items-center gap-2">{actions}</div>}
@@ -27,22 +27,37 @@ export function PageHeader({
   )
 }
 
-/** KPI card: small label above a large value. */
+/**
+ * A row of totals split by hairlines (Mercury's "Net change / Money in / Money out" strip), so a
+ * set of figures reads as one block instead of a row of boxed cards.
+ */
+export function StatStrip({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div
+      className={cn(
+        'no-print grid grid-cols-2 border-y sm:flex sm:flex-wrap [&>*]:py-4 sm:[&>*]:pr-10 sm:[&>*+*]:pl-10 sm:[&>*+*]:border-l',
+        className,
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
+/** One figure in a StatStrip: small grey label over the value. */
 export function StatCard({ label, value }: { label: string; value: ReactNode }) {
   return (
-    <Card size="sm">
-      <CardHeader>
-        <CardDescription>{label}</CardDescription>
-        <CardTitle className="text-xl font-semibold tabular-nums group-data-[size=sm]/card:text-xl">{value}</CardTitle>
-      </CardHeader>
-    </Card>
+    <div className="flex min-w-0 flex-col gap-1">
+      <span className="text-[13px] text-muted-foreground">{label}</span>
+      <span className="text-xl font-medium tracking-[-0.01em] tabular-nums">{maybeMoney(value)}</span>
+    </div>
   )
 }
 
 export function KycBadge() {
   return (
-    <Badge variant="outline">
-      <Check data-icon="inline-start" className="text-positive" />
+    <Badge variant="secondary">
+      <Check data-icon="inline-start" />
       KYC verified
     </Badge>
   )
@@ -56,32 +71,38 @@ export function CancelledBadge({ className }: { className?: string }) {
   )
 }
 
-const statusDot: Record<LoanStatus, string> = {
-  current: 'bg-status-current',
-  updated: 'bg-status-updated',
-  arrears: 'bg-status-arrears',
-  past_due: 'bg-status-past-due',
-  litigation: 'bg-status-litigation',
-  dormant: 'bg-status-dormant',
-  doubtful: 'bg-status-doubtful',
+// One hue per meaning: grey when nothing is owed, amber when late, red when it needs action.
+const statusVariant: Record<LoanStatus, 'secondary' | 'positive' | 'warning' | 'destructive'> = {
+  current: 'secondary',
+  updated: 'positive',
+  arrears: 'warning',
+  past_due: 'destructive',
+  litigation: 'destructive',
+  dormant: 'secondary',
+  doubtful: 'destructive',
 }
 
 export function StatusBadge({ status }: { status: LoanStatus }) {
-  return (
-    <Badge variant="outline">
-      <span aria-hidden className={cn('size-2 rounded-full', statusDot[status])} />
-      {STATUS_LABELS[status]}
-    </Badge>
-  )
+  return <Badge variant={statusVariant[status]}>{STATUS_LABELS[status]}</Badge>
 }
 
-/** Balanced / not balanced banner. */
+/** Balanced / not balanced line: a quiet check when it adds up, a red notice when it doesn't. */
 export function BalanceAlert({ ok, children }: { ok: boolean; children: ReactNode }) {
   return (
-    <Alert variant={ok ? 'default' : 'destructive'} role="status">
-      {ok ? <Check className="text-positive!" /> : <CircleAlert />}
-      <AlertDescription className={cn(ok && 'text-foreground')}>{children}</AlertDescription>
-    </Alert>
+    <div
+      role="status"
+      className={cn(
+        'flex items-start gap-2.5 rounded-md px-3.5 py-3 text-sm',
+        ok ? 'bg-muted text-foreground' : 'bg-pill-negative text-pill-negative-ink',
+      )}
+    >
+      {ok ? (
+        <Check className="mt-0.5 size-4 shrink-0 text-positive" />
+      ) : (
+        <CircleAlert className="mt-0.5 size-4 shrink-0" />
+      )}
+      <p>{children}</p>
+    </div>
   )
 }
 

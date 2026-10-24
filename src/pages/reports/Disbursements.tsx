@@ -4,7 +4,7 @@ import { netProceeds } from '@/data/reportSamples'
 import { useStore } from '@/state/store'
 import { Page } from '@/components/layout'
 import { downloadCsv, ExportButtons, ReportTabs, ReportTitle } from '@/components/reports'
-import { PageHeader, SampleNote, StatCard } from '@/components/shared'
+import { PageHeader, SampleNote, StatCard, StatStrip } from '@/components/shared'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Table,
@@ -66,17 +66,17 @@ export function Disbursements() {
       <ReportTabs />
       <ReportFilters filters={filters} collector={false} />
 
-      <div className="no-print grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <StatStrip>
         <StatCard label="Loans released" value={rows.length} />
         <StatCard label="Principal" value={formatPeso(totals.principal)} />
         <StatCard label="Fees and insurance" value={formatPeso(totals.serviceFee + totals.insurance)} />
         <StatCard label="Net cash released" value={formatPeso(totals.net)} />
-      </div>
+      </StatStrip>
 
       <Card aria-label="Report preview" className="print:ring-0">
         <CardContent className="flex flex-col gap-6">
           <ReportTitle branch={branchName} title={`DISBURSEMENTS for ${range}`} subtitle={`${rows.length} ${rows.length === 1 ? 'loan' : 'loans'} released`} />
-          <div className="rounded-lg border">
+          <div className="-mx-3">
             <Table>
               <TableHeader>
                 <TableRow>

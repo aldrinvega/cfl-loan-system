@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { formatShort, formatShortYear } from '@/lib/dates'
 import { formatPeso } from '@/lib/money'
 import { cn } from '@/lib/utils'
+import { Money } from '@/components/money'
 import { MobileScreen } from '@/components/mobile-layout'
 import { KycBadge, StatCard } from '@/components/shared'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -106,9 +107,11 @@ export function MobileClient() {
                     </ItemContent>
                     <ItemActions className="flex-col items-end gap-0">
                       <span className="text-sm font-medium">
-                        {e.payment ? formatPeso(-e.payment) : `+${formatPeso(e.charges)}`}
+                        <Money value={e.payment ? -e.payment : e.charges} signed />
                       </span>
-                      <span className="text-xs text-muted-foreground">Bal {formatPeso(e.balance)}</span>
+                      <span className="text-xs text-muted-foreground">
+                        Bal <Money value={e.balance} />
+                      </span>
                     </ItemActions>
                   </Item>
                 </div>

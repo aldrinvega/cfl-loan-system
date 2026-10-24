@@ -1,43 +1,25 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useTheme } from 'next-themes'
+import { Link, useLocation } from 'react-router-dom'
 import {
   BookOpen,
-  ChevronsUpDown,
   FileText,
   LayoutDashboard,
-  LogOut,
-  Moon,
   PiggyBank,
   Printer,
   ReceiptText,
   SquareArrowOutUpRight,
-  Sun,
   Users,
   Wrench,
   type LucideIcon,
 } from 'lucide-react'
-import { COMPANY_NAME } from '@/data/sample'
-import { useAuth } from '@/state/auth'
 import { useSettings } from '@/state/settings'
 import type { Permission } from '@/state/permissions'
 import { useSession } from '@/state/session'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -79,19 +61,23 @@ function activeItem(pathname: string): string | undefined {
   return best?.to
 }
 
-function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
+function NavGroup({ items }: { items: NavItem[] }) {
   const { pathname } = useLocation()
   const { can } = useSession()
   const active = activeItem(pathname)
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+    <SidebarGroup className="py-1">
       <SidebarGroupContent>
-        <SidebarMenu>
+        <SidebarMenu className="gap-0.5">
           {items.filter((item) => !item.needs || item.needs.some(can)).map(({ to, label, icon: Icon }) => (
             <SidebarMenuItem key={to}>
-              <SidebarMenuButton isActive={active === to} tooltip={label} render={<Link to={to} />}>
-                <Icon />
+              <SidebarMenuButton
+                isActive={active === to}
+                tooltip={label}
+                className="h-8 gap-2.5 px-2.5 text-sm text-sidebar-foreground [&_svg]:size-4 [&_svg]:text-muted-foreground data-active:[&_svg]:text-foreground"
+                render={<Link to={to} />}
+              >
+                <Icon strokeWidth={1.75} />
                 <span>{label}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -103,81 +89,34 @@ function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
 }
 
 export function AppSidebar() {
-  const { user, branchLabel, roleLabel } = useSession()
-  const { signOut } = useAuth()
+  const { user, branchLabel } = useSession()
   const { showDashboard, homeFor } = useSettings()
-  const navigate = useNavigate()
-  const { resolvedTheme, setTheme } = useTheme()
 
   return (
     <Sidebar collapsible="icon" className="no-print">
-      <SidebarHeader>
+      <SidebarHeader className="px-3 pt-3 pb-2">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<Link to={homeFor(user)} />}>
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-[11px] font-bold text-sidebar-primary-foreground">
-                CFL
+            <SidebarMenuButton size="lg" className="h-11 gap-2.5 px-1.5" render={<Link to={homeFor(user)} />}>
+              <div className="flex aspect-square size-7 items-center justify-center rounded-md bg-sidebar-primary text-[11px] font-semibold tracking-tight text-sidebar-primary-foreground">
+                CF
               </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{COMPANY_NAME}</span>
-                <span className="truncate text-xs text-sidebar-foreground/70">{branchLabel}</span>
+              <div className="grid flex-1 text-left leading-tight">
+                <span className="truncate text-sm font-medium text-foreground">Cash Flow Lending</span>
+                <span className="truncate text-xs text-muted-foreground">{branchLabel}</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
-        {showDashboard && <NavGroup label="Overview" items={overview} />}
-        <NavGroup label="Menu" items={menu} />
+      <SidebarContent className="px-1">
+        {showDashboard && <NavGroup items={overview} />}
+        <NavGroup items={menu} />
       </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={<SidebarMenuButton size="lg" className="data-popup-open:bg-sidebar-accent" />}
-              >
-                <Avatar className="rounded-lg">
-                  <AvatarFallback className="rounded-lg">{user.initials}</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs text-sidebar-foreground/70">{roleLabel}</span>
-                </div>
-                <ChevronsUpDown className="ml-auto" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent side="right" align="end" className="w-64">
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>
-                    <div className="font-medium text-foreground">
-                      {user.firstName} {user.name.split(' ').at(-1)}
-                    </div>
-                    <div className="text-xs font-normal">
-                      @{user.username} · {roleLabel}, {branchLabel}
-                    </div>
-                  </DropdownMenuLabel>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}>
-                  {resolvedTheme === 'dark' ? <Sun /> : <Moon />}
-                  {resolvedTheme === 'dark' ? 'Light mode' : 'Dark mode'}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    signOut()
-                    navigate('/login', { replace: true })
-                  }}
-                >
-                  <LogOut />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <SidebarFooter className="px-4 pb-4 group-data-[collapsible=icon]:hidden">
+        <p className="text-xs leading-relaxed text-muted-foreground">Sample data for preview only.</p>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

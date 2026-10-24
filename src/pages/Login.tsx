@@ -66,18 +66,18 @@ export function Login() {
   }
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-sidebar p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <div className="flex items-center gap-2 self-center font-medium">
-          <div className="flex size-7 items-center justify-center rounded-md bg-primary text-[10px] font-bold text-primary-foreground">
-            CFL
+          <div className="flex size-7 items-center justify-center rounded-md bg-primary text-[11px] font-semibold tracking-tight text-primary-foreground">
+            CF
           </div>
           {COMPANY_NAME}
         </div>
 
-        <Card>
+        <Card className="shadow-[0_1px_2px_rgb(0_0_0/0.04)]">
           <CardHeader className="text-center">
-            <CardTitle className="text-xl">Welcome back</CardTitle>
+            <CardTitle><h1 className="text-xl font-medium tracking-[-0.01em]">Welcome back</h1></CardTitle>
             <CardDescription>Sign in with your branch account</CardDescription>
           </CardHeader>
           <CardContent>

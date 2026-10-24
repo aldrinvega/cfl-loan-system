@@ -6,7 +6,8 @@
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -46,104 +47,117 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* Meaning-carrying colors: paid ahead / balanced, and loan status. */
+  /* Meaning-carrying colours: money in, links and data, status pills. */
   --color-positive: var(--positive);
-  --color-status-current: var(--status-current);
-  --color-status-updated: var(--status-updated);
-  --color-status-arrears: var(--status-arrears);
-  --color-status-past-due: var(--status-past-due);
-  --color-status-litigation: var(--status-litigation);
-  --color-status-dormant: var(--status-dormant);
-  --color-status-doubtful: var(--status-doubtful);
+  --color-link: var(--link);
+  --color-rule: var(--rule);
+  --color-pill-neutral: var(--pill-neutral-bg);
+  --color-pill-neutral-ink: var(--pill-neutral-ink);
+  --color-pill-positive: var(--pill-positive-bg);
+  --color-pill-positive-ink: var(--pill-positive-ink);
+  --color-pill-negative: var(--pill-negative-bg);
+  --color-pill-negative-ink: var(--pill-negative-ink);
+  --color-pill-warning: var(--pill-warning-bg);
+  --color-pill-warning-ink: var(--pill-warning-ink);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 :root {
-  /* Design README tokens (design/README.md). */
-  --radius: 0.625rem;
-  --background: #f4f5f7;
-  --foreground: #161b22;
+  /* Achromatic ledger after the Mercury references: no colour in the chrome, ink for money,
+     one blue for the main data element and name links, green for money coming in. */
+  --radius: 0.5rem;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
   --card: #ffffff;
-  --card-foreground: #161b22;
+  --card-foreground: #0a0a0a;
   --popover: #ffffff;
-  --popover-foreground: #161b22;
-  --primary: #1f4e8c;
+  --popover-foreground: #0a0a0a;
+  --primary: #141414;
   --primary-foreground: #ffffff;
-  --secondary: #eef3fa;
-  --secondary-foreground: #1f3a5f;
-  --muted: #f7f8fa;
-  --muted-foreground: #57606a;
-  --accent: #eef3fa;
-  --accent-foreground: #161b22;
-  --destructive: #a11d1d;
-  --border: #d9dee5;
-  --input: #c5ccd6;
-  --ring: #1f4e8c;
-  --chart-1: #c7d6ea;
-  --chart-2: #8fb0da;
-  --chart-3: #4f7fbf;
-  --chart-4: #1f4e8c;
-  --chart-5: #14243b;
-  --sidebar: #14243b;
-  --sidebar-foreground: #c9d3e0;
-  --sidebar-primary: #b4161b;
+  --secondary: #eeeeee;
+  --secondary-foreground: #141414;
+  --muted: #f6f7f9;
+  --muted-foreground: #6b6b6b;
+  --accent: #f2f3f5;
+  --accent-foreground: #0a0a0a;
+  --destructive: #c4242a;
+  --border: #e6e6e6;
+  --rule: #f0f0f0;
+  --input: #d4d4d4;
+  --ring: #1d5fbf;
+  --link: #1d5fbf;
+  --chart-1: #e5e5e5;
+  --chart-2: #b8b8b8;
+  --chart-3: #6b6b6b;
+  --chart-4: #1d5fbf;
+  --chart-5: #141414;
+  --sidebar: #f6f7f9;
+  --sidebar-foreground: #3d3d3d;
+  --sidebar-primary: #141414;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #2a4468;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #2a4468;
-  --sidebar-ring: #8fb0da;
+  --sidebar-accent: #e9eaed;
+  --sidebar-accent-foreground: #0a0a0a;
+  --sidebar-border: #e6e6e6;
+  --sidebar-ring: #1d5fbf;
 
-  --positive: #116329;
-  --status-current: #1f3a5f;
-  --status-updated: #116329;
-  --status-arrears: #7a5200;
-  --status-past-due: #9a3412;
-  --status-litigation: #a11d1d;
-  --status-dormant: #424a53;
-  --status-doubtful: #5b3a9e;
+  --positive: #2e7d32;
+  --pill-neutral-bg: #eeeeee;
+  --pill-neutral-ink: #3d3d3d;
+  --pill-positive-bg: #dcfae5;
+  --pill-positive-ink: #04250e;
+  --pill-negative-bg: #ffedea;
+  --pill-negative-ink: #831c1e;
+  --pill-warning-bg: #fffbeb;
+  --pill-warning-ink: #92400e;
 }
 
-/* Dark mode keeps the same hues, lifted for contrast on dark surfaces. */
+/* True neutral darks: elevation by lightness, the same single blue on data. */
 .dark {
-  --background: #0d1117;
-  --foreground: #e6edf3;
-  --card: #161b22;
-  --card-foreground: #e6edf3;
-  --popover: #161b22;
-  --popover-foreground: #e6edf3;
-  --primary: #5b8fd6;
-  --primary-foreground: #0d1117;
-  --secondary: #1f2a3a;
-  --secondary-foreground: #c9d3e0;
-  --muted: #1c222b;
-  --muted-foreground: #9aa4af;
-  --accent: #1f2a3a;
-  --accent-foreground: #e6edf3;
-  --destructive: #f07178;
-  --border: rgb(255 255 255 / 10%);
-  --input: rgb(255 255 255 / 16%);
-  --ring: #5b8fd6;
-  --chart-1: #1f3554;
-  --chart-2: #3a5f91;
-  --chart-3: #5b8fd6;
-  --chart-4: #8fb0da;
-  --chart-5: #c7d6ea;
-  --sidebar: #0b1626;
-  --sidebar-foreground: #c9d3e0;
-  --sidebar-primary: #d4373c;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1f3554;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgb(255 255 255 / 10%);
-  --sidebar-ring: #5b8fd6;
+  --background: #0f0f0f;
+  --foreground: #f5f5f5;
+  --card: #161616;
+  --card-foreground: #f5f5f5;
+  --popover: #1b1b1b;
+  --popover-foreground: #f5f5f5;
+  --primary: #f5f5f5;
+  --primary-foreground: #0a0a0a;
+  --secondary: #262626;
+  --secondary-foreground: #f5f5f5;
+  --muted: #1b1b1b;
+  --muted-foreground: #a3a3a3;
+  --accent: #222222;
+  --accent-foreground: #f5f5f5;
+  --destructive: #e5566f;
+  --border: #2a2a2a;
+  --rule: #202020;
+  --input: #3d3d3d;
+  --ring: #6f9ee6;
+  --link: #8db4f0;
+  --chart-1: #2b2b2b;
+  --chart-2: #555555;
+  --chart-3: #949494;
+  --chart-4: #6f9ee6;
+  --chart-5: #f5f5f5;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #c4c4c4;
+  --sidebar-primary: #f5f5f5;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #1f1f1f;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #1f1f1f;
+  --sidebar-ring: #6f9ee6;
 
-  --positive: #3fb950;
-  --status-current: #79a8e8;
-  --status-updated: #3fb950;
-  --status-arrears: #e3b341;
-  --status-past-due: #f0883e;
-  --status-litigation: #f07178;
-  --status-dormant: #9aa4af;
-  --status-doubtful: #b392f0;
+  --positive: #3fc07a;
+  --pill-neutral-bg: #262626;
+  --pill-neutral-ink: #d4d4d4;
+  --pill-positive-bg: #172a1d;
+  --pill-positive-ink: #3fc07a;
+  --pill-negative-bg: #2c1a20;
+  --pill-negative-ink: #f07b8f;
+  --pill-warning-bg: #2a2214;
+  --pill-warning-ink: #e3b341;
 }
 
 @layer base {
@@ -156,6 +170,43 @@
   html {
     @apply font-sans;
     font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--link) 22%, transparent);
+  }
+  :focus-visible {
+    outline-color: var(--ring);
+  }
+}
+
+/* Mercury-style money: the centavos ride small and raised after the pesos. */
+.money {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.money .cents {
+  /* Never under the 11px floor: 11px in 14px rows, 0.64em on large figures. */
+  font-size: max(0.64em, 11px);
+  vertical-align: 0.42em;
+  line-height: 0;
+  letter-spacing: 0.01em;
+  margin-left: 0.04em;
+}
+
+/* Press feedback on every pressable control (Emil: 100-160ms, scale .97, ease-out). */
+[data-slot="button"] {
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-duration: 160ms;
+  transition-timing-function: var(--ease-out);
+}
+[data-slot="button"]:not(:disabled):active {
+  transform: scale(0.97);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="button"]:not(:disabled):active {
+    transform: none;
   }
 }
 

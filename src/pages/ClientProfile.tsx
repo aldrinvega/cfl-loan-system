@@ -1,9 +1,10 @@
 import { useParams } from 'react-router-dom'
 import { Download, UserX } from 'lucide-react'
 import { formatLong, formatMdy, formatMonthYear, formatShort } from '@/lib/dates'
-import { formatAmount, formatPeso } from '@/lib/money'
+import { formatPeso } from '@/lib/money'
 import { cn } from '@/lib/utils'
 import { collectors } from '@/data/sample'
+import { Money } from '@/components/money'
 import { Page } from '@/components/layout'
 import { CancelledBadge, KycBadge, SampleNote, StatCard } from '@/components/shared'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -60,13 +61,13 @@ export function ClientProfile() {
 
   return (
     <Page crumbs={['Clients', clientName(client)]}>
-      <Card>
+      <Card className="rounded-none border-0 bg-transparent py-0 [--card-spacing:0px]">
         <CardHeader className="flex flex-wrap items-center gap-4">
           <Avatar size="lg" className="size-14">
             <AvatarFallback className="text-lg">{clientInitials(client)}</AvatarFallback>
           </Avatar>
           <div className="flex min-w-0 flex-col gap-1.5">
-            <CardTitle className="text-2xl font-semibold">{clientName(client)}</CardTitle>
+            <CardTitle><h1 className="text-2xl font-medium tracking-[-0.02em]">{clientName(client)}</h1></CardTitle>
             <CardDescription>
               {client.id} · Collector {collector?.id} · {collector?.name} · Client since{' '}
               {formatMonthYear(client.clientSince)}
@@ -108,7 +109,7 @@ export function ClientProfile() {
           <TabsTrigger value="history" className="flex-none">History</TabsTrigger>
         </TabsList>
 
-        <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_288px]">
           <div className="flex min-w-0 flex-col gap-6">
             <TabsContent value="loans" className="flex flex-col gap-6">
               {account.loans.map((l) => (
@@ -215,7 +216,7 @@ function SafekeepingCard({ account, detailed = false }: { account: ClientAccount
     <Card>
       <CardHeader>
         <CardTitle>Safekeeping</CardTitle>
-        <CardAction className="font-semibold">{formatPeso(safekeeping.balance)}</CardAction>
+        <CardAction className="font-semibold"><Money value={safekeeping.balance} /></CardAction>
       </CardHeader>
       <CardContent>
         <ItemGroup>
@@ -243,7 +244,7 @@ function SafekeepingCard({ account, detailed = false }: { account: ClientAccount
 function Amount({ value }: { value: number }) {
   return (
     <TableCell className={cn('text-right', value === 0 && 'text-muted-foreground')}>
-      {value === 0 ? '–' : formatAmount(value)}
+      {value === 0 ? '–' : <Money value={value} peso={false} />}
     </TableCell>
   )
 }
@@ -283,7 +284,7 @@ function LoanLedger({ loan, ledger, summary }: ClientAccount['loans'][number]) {
           <ProgressValue className="ml-auto" />
         </Progress>
 
-        <div className="rounded-lg border">
+        <div className="-mx-3">
           <Table>
             <TableHeader>
               <TableRow>
@@ -297,24 +298,24 @@ function LoanLedger({ loan, ledger, summary }: ClientAccount['loans'][number]) {
             </TableHeader>
             <TableBody>
               {ledger.map((e) => (
-                <TableRow key={`${e.reference}-${e.kind}`} className={cn(e.kind === 'penalty' && 'bg-destructive/5')}>
+                <TableRow key={`${e.reference}-${e.kind}`}>
                   <TableCell>{formatMdy(e.date)}</TableCell>
                   <TableCell>{e.reference}</TableCell>
-                  <TableCell className={cn(e.kind === 'penalty' && 'font-medium text-destructive')}>
+                  <TableCell className={cn('min-w-48 whitespace-normal', e.kind === 'penalty' && 'font-medium text-destructive')}>
                     {e.entry}
                   </TableCell>
                   <Amount value={e.charges} />
                   <Amount value={e.payment} />
-                  <TableCell className="text-right font-medium">{formatAmount(e.balance)}</TableCell>
+                  <TableCell className="text-right font-medium"><Money value={e.balance} peso={false} /></TableCell>
                 </TableRow>
               ))}
             </TableBody>
             <TableFooter>
               <TableRow>
                 <TableCell colSpan={3}>Totals</TableCell>
-                <TableCell className="text-right">{formatAmount(summary.totalCharges)}</TableCell>
-                <TableCell className="text-right">{formatAmount(summary.totalPaid)}</TableCell>
-                <TableCell className="text-right">{formatAmount(summary.balance)}</TableCell>
+                <TableCell className="text-right"><Money value={summary.totalCharges} peso={false} /></TableCell>
+                <TableCell className="text-right"><Money value={summary.totalPaid} peso={false} /></TableCell>
+                <TableCell className="text-right"><Money value={summary.balance} peso={false} /></TableCell>
               </TableRow>
             </TableFooter>
           </Table>
@@ -338,7 +339,7 @@ function ReceiptsCard({ account }: { account: ClientAccount }) {
         <CardDescription>Every receipt on record for this client, including cancelled ones.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="rounded-lg border">
+        <div className="-mx-3">
           <Table>
             <TableHeader>
               <TableRow>
@@ -359,9 +360,9 @@ function ReceiptsCard({ account }: { account: ClientAccount }) {
                     {r.status === 'cancelled' && <CancelledBadge className="ml-2" />}
                   </TableCell>
                   <TableCell>{r.loanId}</TableCell>
-                  <TableCell className="text-right">{formatAmount(r.amount)}</TableCell>
-                  <TableCell className="text-right">{formatAmount(r.loansReceivable)}</TableCell>
-                  <TableCell className="text-right">{formatAmount(r.safekeeping)}</TableCell>
+                  <TableCell className="text-right"><Money value={r.amount} peso={false} /></TableCell>
+                  <TableCell className="text-right"><Money value={r.loansReceivable} peso={false} /></TableCell>
+                  <TableCell className="text-right"><Money value={r.safekeeping} peso={false} /></TableCell>
                 </TableRow>
               ))}
             </TableBody>

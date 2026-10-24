@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { useCollectionDays } from '@/state/portfolio'
 import { Page } from '@/components/layout'
 import { downloadCsv, ExportButtons, ReportTabs, ReportTitle } from '@/components/reports'
-import { PageHeader, SampleNote, StatCard } from '@/components/shared'
+import { PageHeader, SampleNote, StatCard, StatStrip } from '@/components/shared'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -37,7 +37,7 @@ const efficiency = (collected: number, target: number) => (target === 0 ? 0 : (c
 
 function EfficiencyBadge({ value }: { value: number }) {
   return (
-    <Badge variant={value < 80 ? 'destructive' : value >= 100 ? 'default' : 'secondary'}>{value.toFixed(1)}%</Badge>
+    <Badge variant={value < 80 ? 'destructive' : value >= 100 ? 'positive' : 'secondary'}>{value.toFixed(1)}%</Badge>
   )
 }
 
@@ -97,12 +97,12 @@ export function Collections() {
       <ReportTabs />
       <ReportFilters filters={filters} />
 
-      <div className="no-print grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <StatStrip>
         <StatCard label="Target" value={formatPeso(target)} />
         <StatCard label="Collected" value={formatPeso(collected)} />
         <StatCard label="Efficiency" value={`${efficiency(collected, target).toFixed(1)}%`} />
         <StatCard label="Accounts paid" value={`${paid} of ${due}`} />
-      </div>
+      </StatStrip>
 
       <Card className="no-print">
         <CardHeader>
@@ -132,7 +132,7 @@ export function Collections() {
             title={`COLLECTIONS for ${formatMdy(from)} to ${formatMdy(to)}`}
             subtitle={collectorLine}
           />
-          <div className="rounded-lg border">
+          <div className="-mx-3">
             <Table>
               <TableHeader>
                 <TableRow>

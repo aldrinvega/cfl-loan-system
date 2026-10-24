@@ -82,7 +82,7 @@ export function SafekeepingBalances() {
       <Card aria-label="Report preview" className="print:ring-0">
         <CardContent className="flex flex-col gap-6">
           <ReportTitle branch={filters.branchName} title={`SAFEKEEPING BALANCES for ${range}`} subtitle={filters.collectorLine} />
-          <div className="rounded-lg border">
+          <div className="-mx-3">
             <Table>
               <TableHeader>
                 <TableRow>

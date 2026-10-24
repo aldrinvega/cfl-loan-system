@@ -7,13 +7,29 @@ All names, loan IDs and amounts are fictional sample data. Status as of October 
 the shadcn CSS variables set to the design README tokens. `../app/` (the first, pixel-matched build
 of the original mockups) is no longer updated.
 
+## Client preview
+
+The app is live for client checking at **https://aldrinvega.github.io/cfl-loan-system/**
+(public repo: https://github.com/aldrinvega/cfl-loan-system).
+
+- **Hosting**: GitHub Pages, published by GitHub Actions (`.github/workflows/deploy.yml`).
+- **Updates**: every push to `main` installs, runs the tests, builds and republishes, in about a
+  minute. A failing test stops the deploy, so the client never gets a broken build.
+- **Links**: share the main link. Direct links such as `.../cfl-loan-system/payments/new` open
+  the right screen, but GitHub returns them with a "not found" status code (they're served by
+  the `404.html` fallback), which some link previews show as an error.
+- **Data**: each viewer has their own copy in the browser; nothing entered is shared, and a reload
+  resets it. "Keep me signed in" and the Dashboard setting are per browser.
+- **Access**: anyone with the link can open it, and the repo, including the company name, is
+  public. The sign-in is demo-only, and every name and amount is fictional.
+
 ## How to run
 
 ```sh
 cd app-shadcn
 npm install
 npm run dev      # http://localhost:5173
-npm test         # 30 tests
+npm test         # 32 tests
 npm run build
 ```
 
@@ -64,28 +80,30 @@ There is no cashier role. Four roles, with duties split so no one does the other
   Kbd, Label, Progress, Radio Group, Select, Separator, Sidebar, Sonner, Switch, Table, Tabs,
   Textarea, Toggle Group, Tooltip
 - shadcn blocks: `login-03` (sign-in) and `dashboard-01` (section cards, interactive area chart)
-- **Theme**: the shadcn CSS variables carry the design README tokens: sidebar `#14243B` (active item
-  `#2A4468`), primary `#1F4E8C`, background `#F4F5F7`, text `#161B22`, muted text `#57606A`,
-  borders `#D9DEE5` (inputs `#C5CCD6`), company badge `#B4161B`, the seven loan-status colors and
-  the success green. Dark mode has its own lifted values for the same hues.
-- **Font**: IBM Plex Sans (Google Fonts), tabular numbers for amounts.
-- **Controls**: inputs, selects and buttons are 40 px tall.
+- **Look (redesigned after the Mercury references)**: white canvas beside a blue-grey sidebar
+  (`#F6F7F9`), ink text `#0A0A0A`, grey `#6B6B6B`, hairlines `#E6E6E6`, near-black buttons
+  `#141414`, one blue `#1D5FBF` for links and the main chart line, green `#2E7D32` for money coming
+  in, pale status pills. No colour in the chrome, no shadows on anything at rest. Dark mode uses
+  true neutral greys. Full record in `DESIGN.md`.
+- **Font**: Geist (Google Fonts), tabular numbers; amounts show the centavos small and raised.
+- **Controls**: inputs, selects and buttons are 40 px tall, small buttons included.
+- **Lists**: Loans, Clients and the Cash Receipts Book open a detail panel on the right when you
+  click a row; totals sit in a divided strip above each list.
 
 ## Screenshots
 
-All 32 screens are in [`screenshots/`](screenshots/), captured at 2x, full length.
+All 30 screens are in [`screenshots/`](screenshots/), in light mode, captured at 2x, full length.
 
 | # | Screen |
 |---|---|
 | 01 | Sign-in |
-| 02–04 | Dashboard (with the setting on): accounting officer, President, accounting officer in dark mode |
-| 05–07 | Encode Payments: empty, cash entered, full payment with rebate by check |
-| 08–10 | Loans: list (loan officer), new loan with schedule preview, release dialog (accounting officer) |
-| 11–20 | Safekeeping, Clients, client profile, Ctrl+K client search, Cash Receipts Book, Disbursements, Utilities, Settings, Day close, Print Reports |
-| 21–24 | Daily target (President), Collections, Loan ledger, Aging |
-| 25 | Encode Payments in dark mode |
-| 26–29 | Collector phone: Today, Clients, client profile, More |
-| 30–32 | Loan officer Dashboard, loan officer blocked from Encode Payments, Loans as an accounting officer |
+| 02–03 | Dashboard (with the setting on): accounting officer, President |
+| 04–06 | Encode Payments: empty, cash with typed safekeeping, full payment with rebate by check |
+| 07–09 | Loans: list (loan officer), new loan with schedule preview, release dialog (accounting officer) |
+| 10–19 | Safekeeping, Clients, client profile, Ctrl+K client search, Cash Receipts Book, Disbursements, Utilities, Settings, Day close, Print Reports |
+| 20–23 | Daily target (President), Collections, Loan ledger, Aging |
+| 24–27 | Collector phone: Today, Clients, client profile, More |
+| 28–30 | Loan officer Dashboard, loan officer blocked from Encode Payments, Loans as an accounting officer |
 
 ## What was built
 
@@ -239,11 +257,13 @@ marked "coming soon".
 
 ## Tests
 
-30 tests, all passing:
+32 tests, all passing:
 
 - **Report math**: Cash Receipts totals and balance, ledger running balance, loan summary,
   safekeeping, daily target subtotals and recap, all against the mockup figures.
-- **Cashiering**: account summary split, rebate, breakdown modes, full payment clearing the loan.
+- **Cashiering**: account summary split, rebate, breakdown modes, typed safekeeping taken first,
+  overpayment going toward the loan, money beyond the balance left unallocated, full payment
+  clearing the loan.
 - **Encode Payments flow**: route, account, cash, breakdown modes, an incomplete check blocked,
   post with Ctrl+S, Cash Receipts still balances, then cancel.
 - **Loans**: pro-rated interest, a schedule that adds up with the rounding in the last
@@ -259,12 +279,23 @@ marked "coming soon".
 
 ## Changes in the latest round
 
+- **Redesign after Mercury** (branch `redesign-mercury`, not yet on the client preview): new
+  colours, Geist, raised centavos, a top bar with search (Ctrl+K), the role's main job and the
+  account menu, divided summary strips instead of stat cards, flat tables, and right-hand detail
+  panels on Loans, Clients and Cash Receipts (receipts can be cancelled from the panel). The
+  Dashboard, sign-in, reports, Encode Payments and the collector phone screens all use the same
+  look. Made with the taste-skill, Impeccable and Emil Kowalski design skills; Impeccable's
+  independent finish review passed after two fix rounds. Product facts are in `PRODUCT.md`, the
+  design system in `DESIGN.md`. All 30 screenshots are retaken in the new look.
+- **Deployed for client checking**: published to GitHub Pages with automatic test-and-deploy on
+  every push (see Client preview). The app now works under a sub-path (`BASE_PATH` for the build,
+  router `basename`), and `404.html` lets direct links open the right screen.
 - **Safekeeping typed in**: on Encode Payments, safekeeping is now a manual field (like other
   penalty) instead of being computed from what's left over. This replaces the design README's
   "safekeeping automatic, never typed in" rule. Anything above the amount due now goes toward the
-  loan as an advance payment.
-- **Accounting officer**: the role label is "Accounting officer".
-
+  loan as an advance payment, up to the balance.
+- **Total to cash / Total to check** are still there: they're greyed out only while the breakdown
+  total is ₱0, and work once an amount is typed or a breakdown mode is picked.
 - **Roles**: Cashier replaced by Accounting officer; Loan officer added (A. Cruz); President and
   Collector kept. Duties split as in the Roles table, with role-aware menus, buttons, Dashboard
   and "No access" pages.
@@ -301,6 +332,10 @@ marked "coming soon".
 5. **Portfolio at risk limit**: the Dashboard's "5% limit" is a placeholder.
 6. **Safekeeping and Disbursements menus** open reports; the legacy system may have data-entry
    screens there (withdrawals, releases outside the Loans screen).
+7. **Overpayment with no safekeeping**: it currently goes toward the loan as an advance. Should it
+   go to safekeeping instead, or block posting until it's assigned?
+8. **Public preview**: the repo and preview are public. If the client prefers it private, it needs
+   a host with a password (e.g. Netlify or Vercel with protection) or a private repo on a paid plan.
 
 ## Not built yet
 
