@@ -12,7 +12,7 @@ const reportTabs: { to: string; label: string; needs?: Permission }[] = [
   { to: '/reports/cash-receipts', label: 'Cash Receipts', needs: 'viewCashReports' },
   { to: '/reports/daily-target', label: 'Daily target of collectors', needs: 'viewLoanReports' },
   { to: '/reports/collections', label: 'Collections', needs: 'viewCashReports' },
-  { to: '/reports/disbursements', label: 'Disbursements', needs: 'viewCashReports' },
+  { to: '/reports/disbursements', label: 'Loan releases', needs: 'viewCashReports' },
   { to: '/reports/loan-ledger', label: 'Loan ledger', needs: 'viewLoanReports' },
   { to: '/reports/more', label: 'All reports' },
 ]
@@ -27,7 +27,7 @@ export function ReportTabs() {
   const value = tabs.some((t) => t.to === pathname) ? pathname : '/reports/more'
   return (
     <Tabs value={value} onValueChange={(v) => navigate(String(v))} className="no-print">
-      <TabsList variant="line" className="w-full justify-start overflow-x-auto">
+      <TabsList variant="line" className="w-full justify-start overflow-x-auto pr-3">
         {tabs.map((tab) => (
           <TabsTrigger key={tab.to} value={tab.to} className="flex-none">
             {tab.label}

@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { DetailPanel, Facts, LeadFigure, PanelSection, Person, rowOpens, stopRow } from '@/components/ledger'
 import { Money } from '@/components/money'
+import { Signatures } from '@/components/signatures'
 import {
   Dialog,
   DialogContent,
@@ -48,7 +49,7 @@ type Filters = {
 }
 
 export function CashReceipts() {
-  const { user, canSeeBranch, roleLabel, can } = useSession()
+  const { user, canSeeBranch, can } = useSession()
   const { receipts, clients } = useStore()
   const [params] = useSearchParams()
 
@@ -300,9 +301,8 @@ export function CashReceipts() {
             {formatPeso(totals.safekeeping)}
           </BalanceAlert>
         </CardContent>
-        <CardFooter className="flex-wrap gap-x-12 gap-y-6 border-t text-sm">
-          <Signature label="Prepared by" name={`${user.name}, ${roleLabel}`} />
-          <Signature label="Checked by" name="Branch manager" />
+        <CardFooter className="block border-t">
+          <Signatures />
         </CardFooter>
       </Card>
       <SampleNote />
@@ -389,14 +389,6 @@ function ReceiptPanel({
   )
 }
 
-function Signature({ label, name }: { label: string; name: string }) {
-  return (
-    <div className="flex min-w-48 flex-col gap-6">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="border-t pt-2 font-medium">{name}</span>
-    </div>
-  )
-}
 
 /** Cancelling keeps the receipt number on record with zero amounts. A reason is required. */
 function CancelReceiptDialog({ receipt, onClose }: { receipt: Receipt | null; onClose: () => void }) {

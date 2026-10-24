@@ -7,6 +7,7 @@ export type Permission =
   | 'fileLoans'
   | 'approveLoans'
   | 'releaseLoans'
+  | 'encodeVouchers'
   | 'viewLoans'
   | 'viewClients'
   | 'viewCashReports'
@@ -24,6 +25,7 @@ const PERMISSIONS: Record<Role, readonly Permission[]> = {
     'encodePayments',
     'cancelReceipts',
     'releaseLoans',
+    'encodeVouchers',
     'viewLoans',
     'viewClients',
     'viewCashReports',

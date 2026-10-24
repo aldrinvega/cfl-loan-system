@@ -113,6 +113,12 @@ export function useCashieringForm(initial?: { collectorId?: string; loanId?: str
     setSubmitted(false)
   }
 
+  /** Shows every problem on the form and says whether it can be posted. */
+  function check(): boolean {
+    setSubmitted(true)
+    return canPost && !!account && !!breakdown && !!effective
+  }
+
   /** Posts the receipt if everything checks out. Returns the posted receipt, or null. */
   function post(): Receipt | null {
     setSubmitted(true)
@@ -156,6 +162,7 @@ export function useCashieringForm(initial?: { collectorId?: string; loanId?: str
   }
 
   return {
+    check,
     collector,
     collectorId,
     accounts,

@@ -91,6 +91,9 @@ describe('cashiering → cash receipts', () => {
     await user.type(screen.getByLabelText('Check 1 branch'), 'San Fernando')
     await user.type(screen.getByLabelText('Check 1 date'), '10/22/2026')
     await user.keyboard('{Control>}s{/Control}')
+    // Like the legacy "Sure about your entries?", posting asks once before it commits.
+    expect(await screen.findByText('Post OR 450112?')).toBeTruthy()
+    await user.click(screen.getByRole('button', { name: 'Post OR 450112' }))
     expect(await screen.findByText('OR 450112 posted')).toBeTruthy()
 
     // Cash Receipts picks it up and still balances.

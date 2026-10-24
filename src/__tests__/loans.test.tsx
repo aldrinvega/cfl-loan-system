@@ -10,7 +10,8 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { EncodePayment } from '@/pages/EncodePayment'
 import { LoanList } from '@/pages/loans/LoanList'
 import { NewLoan } from '@/pages/loans/NewLoan'
-import { Disbursements } from '@/pages/reports/Disbursements'
+import { NewVoucher } from '@/pages/disbursements/NewVoucher'
+import { VoucherList } from '@/pages/disbursements/VoucherList'
 import { AuthProvider } from '@/state/auth'
 import { SessionProvider } from '@/state/session'
 import { SettingsProvider } from '@/state/settings'
@@ -21,6 +22,13 @@ afterEach(cleanup)
 beforeAll(() => {
   window.matchMedia = (query: string) =>
     ({ matches: false, media: query, addEventListener() {}, removeEventListener() {} }) as unknown as MediaQueryList
+  // jsdom lacks these; the account search popover uses them.
+  globalThis.ResizeObserver ??= class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver
+  Element.prototype.scrollIntoView ??= () => {}
 })
 
 /** The office screens as `userId` sees them, with the same permission guards as the app. */
@@ -36,8 +44,12 @@ function app(path: string, userId: string) {
                   <Route path="loans" element={<Guard permission="viewLoans" name="Loans"><LoanList /></Guard>} />
                   <Route path="loans/new" element={<Guard permission="fileLoans" name="New loan"><NewLoan /></Guard>} />
                   <Route
-                    path="reports/disbursements"
-                    element={<Guard permission="viewCashReports" name="Disbursements"><Disbursements /></Guard>}
+                    path="disbursements"
+                    element={<Guard permission="viewCashReports" name="Disbursements"><VoucherList /></Guard>}
+                  />
+                  <Route
+                    path="disbursements/new"
+                    element={<Guard permission="encodeVouchers" name="New voucher"><NewVoucher /></Guard>}
                   />
                   <Route
                     path="payments/new"
@@ -61,6 +73,10 @@ function renderApp(path: string, userId: string) {
 }
 
 const rowOf = (text: string) => screen.getByText(text).closest('tr')!
+
+/** Matches an amount shown with raised centavos, whose digits are split across two spans. */
+const money = (text: string) => (_: string, el: Element | null) =>
+  !!el?.classList.contains('money') && el.textContent === text
 
 describe('loans: apply → approve → release', () => {
   it('checks the terms before filing', async () => {
@@ -104,12 +120,18 @@ describe('loans: apply → approve → release', () => {
     expect(within(rowOf('LN-2026-0483')).getByText('Released')).toBeTruthy()
     expect(within(rowOf('LN-2026-0483')).getByText('DV-2224')).toBeTruthy()
 
-    // The voucher is on the Disbursements report.
+    // The voucher is on the Disbursements screen: net proceeds paid out, journal behind it.
     await user.click(screen.getByRole('link', { name: 'Disbursements' }))
     const voucher = (await screen.findByText('DV-2224')).closest('tr')!
     expect(within(voucher).getByText('Castillo, Nora')).toBeTruthy()
-    expect(within(voucher).getByText('6,000.00')).toBeTruthy()
-    expect(within(voucher).getByText('5,760.00')).toBeTruthy()
+    expect(within(voucher).getByText(money('5,760.00'))).toBeTruthy()
+    await user.click(voucher)
+    const lines = await screen.findByRole('dialog')
+    // Loans Receivable at the full amount to repay: ₱6,000.00 + ₱1,200.00 interest.
+    expect(within(lines).getByText('Loans Receivable')).toBeTruthy()
+    expect(within(lines).getAllByText(money('7,200.00')).length).toBeGreaterThan(0)
+    expect(within(lines).getByText('Debits equal credits.')).toBeTruthy()
+    await user.keyboard('{Escape}')
 
     // The released loan now takes payments; an application still waiting does not.
     await user.click(screen.getByRole('link', { name: 'Encode Payments' }))
@@ -141,5 +163,43 @@ describe('role limits', () => {
     cleanup()
     renderApp('/loans/new', 'msantos')
     expect(screen.getByText('No access to New loan')).toBeTruthy()
+  })
+})
+
+describe('disbursements: expense vouchers', () => {
+  it('saves a balanced voucher with an account from the chart, then deletes it', async () => {
+    const user = userEvent.setup()
+    renderApp('/disbursements/new', 'msantos')
+
+    // Nothing balances yet, so it won't save.
+    await user.click(screen.getByRole('button', { name: 'Save voucher' }))
+    expect(screen.getByText('Enter who the check is for.')).toBeTruthy()
+
+    await user.type(screen.getByLabelText('Payee'), 'Dizon Realty')
+    await user.click(screen.getByRole('button', { name: 'Line 1 account' }))
+    await user.type(await screen.findByPlaceholderText('Search title or code'), 'rent')
+    await user.click(await screen.findByText('Rent Expense'))
+    await user.type(screen.getByLabelText('Line 1 debit'), '18000')
+    await user.tab()
+    // The check side: credit China Bank with the difference.
+    await user.click(screen.getByRole('button', { name: 'Balance with China Bank' }))
+    expect(screen.getByRole('button', { name: 'Line 1 account' }).textContent).toContain('Rent Expense')
+    expect(screen.getByRole('button', { name: 'Line 2 account' }).textContent).toContain('Cash in Bank - China Bank')
+    await user.click(screen.getByRole('button', { name: 'Save voucher' }))
+    expect(await screen.findByText('DV-2224 saved')).toBeTruthy()
+
+    // It opens on the list with its journal entry.
+    const panel = await screen.findByRole('dialog')
+    expect(within(panel).getByText('Rent Expense')).toBeTruthy()
+    expect(within(panel).getByText('Debits equal credits.')).toBeTruthy()
+    await user.click(within(panel).getByRole('button', { name: 'Delete voucher' }))
+    const confirm = await screen.findByText('Delete DV-2224?')
+    await user.click(within(confirm.closest('[role="dialog"]') as HTMLElement).getByRole('button', { name: 'Delete voucher' }))
+    expect(await screen.findByText('DV-2224 deleted')).toBeTruthy()
+  })
+
+  it('keeps a loan officer from encoding vouchers', () => {
+    renderApp('/disbursements/new', 'acruz')
+    expect(screen.getByText('No access to New voucher')).toBeTruthy()
   })
 })

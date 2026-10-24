@@ -45,7 +45,7 @@ const menu: NavItem[] = [
   { to: '/reports/safekeeping', label: 'Safekeeping', icon: PiggyBank, needs: ['viewCashReports'] },
   { to: '/clients', label: 'Clients', icon: Users, needs: ['viewClients'] },
   { to: '/reports/cash-receipts', label: 'Cash Receipts Book', icon: BookOpen, needs: ['viewCashReports'] },
-  { to: '/reports/disbursements', label: 'Disbursements', icon: SquareArrowOutUpRight, match: ['/reports/disbursements', '/disbursements'], needs: ['viewCashReports'] },
+  { to: '/disbursements', label: 'Disbursements', icon: SquareArrowOutUpRight, needs: ['viewCashReports'] },
   { to: '/utilities', label: 'Utilities', icon: Wrench, match: ['/utilities', '/day-close', '/settings'], needs: ['dayClose', 'settings'] },
   { to: '/reports/more', label: 'Print Reports', icon: Printer, match: ['/reports'] },
 ]

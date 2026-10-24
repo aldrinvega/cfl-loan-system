@@ -279,7 +279,29 @@ marked "coming soon".
 
 ## Changes in the latest round
 
-- **Redesign after Mercury** (branch `redesign-mercury`, not yet on the client preview): new
+- **From the legacy system videos** (six screen recordings and three photos of the FoxPro system,
+  October 23, 2026):
+  - **Disbursements is now a working voucher screen**, like the legacy one: every check voucher
+    (loan releases and expenses) with search by voucher no., payee or check no., tabs for loan
+    releases and expenses, and a side panel with the voucher's journal entry (account title,
+    code, debit, credit, totals that must agree). The old report stays under Print Reports as
+    "Disbursement Report - Loan Releases".
+  - **New voucher** (legacy "New CV", accounting officers only): payee, date, bank, check no.
+    (next number filled in), explanation, and journal lines with an account-title search over the
+    chart of accounts (F5, as in the legacy "quick Title Search"); "Balance with China Bank" puts
+    the difference on the Cash in Bank credit. It won't save until debits equal credits.
+    Expense vouchers can be deleted; loan releases are locked.
+  - **Printable voucher** (legacy "Print CV") with Prepared / Checked / Noted-Approved / Received
+    by.
+  - **Loan releases post a journal entry**: Loans Receivable debited at principal + interest;
+    credits to Unearned Interest Income, Unearned Service Fee, Medical Assistance Uncollected
+    (the 1% insurance) and Cash in Bank for the net proceeds.
+  - **Print Reports lists all 26 legacy reports** in the legacy order and numbering; 9 open here,
+    the rest are marked "Not built yet". **Signatories** (Checked by, Noted/Approved by, with
+    designations) are set there and printed on the Cash Receipts Book and vouchers.
+  - **Posting asks first**, like the legacy "Sure about your entries?": Post (or Ctrl+S) shows the
+    OR no., client, cash, checks and breakdown; Enter confirms.
+- **Redesign after Mercury** (live on the client preview since October 24, 2026): new
   colours, Geist, raised centavos, a top bar with search (Ctrl+K), the role's main job and the
   account menu, divided summary strips instead of stat cards, flat tables, and right-hand detail
   panels on Loans, Clients and Cash Receipts (receipts can be cancelled from the panel). The
@@ -337,9 +359,20 @@ marked "coming soon".
 8. **Public preview**: the repo and preview are public. If the client prefers it private, it needs
    a host with a password (e.g. Netlify or Vercel with protection) or a private repo on a paid plan.
 
+9. **Release deductions**: the legacy release voucher (photo of CV 4740) credits Unearned
+   Interest, Unearned Service Fee, Notarial Fee, Medical Assistance, PAF, VAT, DOC, Misc Fee and a
+   Processing Fee. The app still uses the placeholder 3% service fee and 1% insurance; the real
+   list and rates are needed.
+10. **Chart of accounts**: the titles and codes come from the videos plus sample expense titles;
+    the accounting office's full chart is needed.
+11. **Voucher numbers**: the legacy screen numbers check vouchers as "CV No." 4740; the app uses
+    DV-2224 style. Which numbering should stay?
+
 ## Not built yet
 
 - A server, database and real sign-in. Data lives in memory and resets on reload.
-- Day close, Receipt booklets, Users and passwords, safekeeping withdrawals, the "coming soon"
-  reports.
+- Day close, Receipt booklets, Users and passwords, safekeeping withdrawals, the 17 legacy
+  reports marked "Not built yet".
+- From the legacy Cashiering module: Show All Loans (closed loans), Close this Loan, Rebate Date,
+  Choose from Loans on a new voucher, Change Payee Name, Print Check.
 - Loan restructuring, renewals and write-offs.

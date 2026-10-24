@@ -21,6 +21,9 @@ import { MobileClients } from '@/pages/mobile/Clients'
 import { MobileClient } from '@/pages/mobile/MobileClient'
 import { Today } from '@/pages/mobile/Today'
 import { LoanList } from '@/pages/loans/LoanList'
+import { NewVoucher } from '@/pages/disbursements/NewVoucher'
+import { VoucherList } from '@/pages/disbursements/VoucherList'
+import { VoucherPrint } from '@/pages/disbursements/VoucherPrint'
 import { NewLoan } from '@/pages/loans/NewLoan'
 import { DashboardRoute, HomeRedirect, Settings } from '@/pages/Settings'
 import { Login } from '@/pages/Login'
@@ -55,7 +58,9 @@ export default function App() {
             <Route path="loans/new" element={<Guard permission="fileLoans" name="New loan"><NewLoan /></Guard>} />
             <Route path="payments" element={<Navigate to="/payments/new" replace />} />
             <Route path="payments/new" element={<Guard permission="encodePayments" name="Encode Payments"><EncodePayment /></Guard>} />
-            <Route path="disbursements" element={<Navigate to="/reports/disbursements" replace />} />
+            <Route path="disbursements" element={<Guard permission="viewCashReports" name="Disbursements"><VoucherList /></Guard>} />
+            <Route path="disbursements/new" element={<Guard permission="encodeVouchers" name="New voucher"><NewVoucher /></Guard>} />
+            <Route path="disbursements/:no" element={<Guard permission="viewCashReports" name="Disbursements"><VoucherPrint /></Guard>} />
             <Route path="reports" element={<Navigate to="/reports/more" replace />} />
             <Route path="reports/cash-receipts" element={<Guard permission="viewCashReports" name="Cash Receipts Book"><CashReceipts /></Guard>} />
             <Route path="reports/daily-target" element={<Guard permission="viewLoanReports" name="Daily target of collectors"><DailyTarget /></Guard>} />

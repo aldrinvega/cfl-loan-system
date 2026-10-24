@@ -6,8 +6,10 @@ import type { IsoDate } from '@/lib/dates'
 import { buildLedger, safekeepingFor, summarizeLoan } from '@/lib/ledger'
 import { nextNumber } from '@/lib/loans'
 import { cancelled } from '@/lib/receipts'
+import { releaseLines, type Voucher } from '@/lib/vouchers'
+import { expenseVouchers } from '@/data/vouchers'
 
-type State = { receipts: Receipt[]; loans: Loan[]; disbursements: Disbursement[] }
+type State = { receipts: Receipt[]; loans: Loan[]; disbursements: Disbursement[]; expenseVouchers: Voucher[] }
 
 type Action =
   | { type: 'post'; receipt: Receipt }
@@ -15,6 +17,8 @@ type Action =
   | { type: 'submitLoan'; loan: Loan }
   | { type: 'approveLoan'; id: string; by: string }
   | { type: 'releaseLoan'; id: string; by: string; on: IsoDate; voucher: string }
+  | { type: 'saveVoucher'; voucher: Voucher }
+  | { type: 'deleteVoucher'; no: string }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -67,6 +71,31 @@ function reducer(state: State, action: Action): State {
         ],
       }
     }
+    case 'saveVoucher':
+      if (state.expenseVouchers.some((v) => v.no === action.voucher.no)) return state
+      return { ...state, expenseVouchers: [...state.expenseVouchers, action.voucher] }
+    case 'deleteVoucher':
+      return { ...state, expenseVouchers: state.expenseVouchers.filter((v) => v.no !== action.no) }
+  }
+}
+
+/** A loan release as a check voucher, from its disbursement record. */
+function releaseVoucher(d: Disbursement, loans: readonly Loan[]): Voucher {
+  const loan = loans.find((l) => l.id === d.loanId)
+  // Loans outside the live sample (the Angeles snapshot) carry the product's usual 20% flat interest.
+  const interest = loan?.interest ?? Math.round(d.principal * 0.2)
+  return {
+    no: d.voucher,
+    date: d.date,
+    branchId: d.branchId,
+    payee: d.borrower,
+    bank: 'China Bank',
+    checkNo: `028${d.voucher.replace(/\D/g, '').padStart(4, '0')}`,
+    encoder: d.releasedBy,
+    kind: 'release',
+    loanId: d.loanId,
+    explanation: `Release of ${d.loanId}, ${d.product}`,
+    lines: releaseLines({ ...d, interest }, 'China Bank'),
   }
 }
 
@@ -80,6 +109,8 @@ type Store = {
   /** Every loan, including applications waiting on approval or release. */
   allLoans: Loan[]
   disbursements: Disbursement[]
+  /** Every check voucher: loan releases plus expenses, newest number first. */
+  vouchers: Voucher[]
   postReceipt: (receipt: Receipt) => void
   cancelReceipt: (no: string, reason: string) => void
   /** Files a loan application and returns its loan ID. */
@@ -87,6 +118,10 @@ type Store = {
   approveLoan: (id: string, by: string) => void
   /** Releases an approved loan and returns its disbursement voucher number. */
   releaseLoan: (id: string, by: string, on: IsoDate) => string
+  /** Saves an expense voucher under the next number and returns that number. */
+  saveVoucher: (voucher: Omit<Voucher, 'no' | 'kind'>) => string
+  /** Deletes an expense voucher. Loan releases can't be deleted. */
+  deleteVoucher: (no: string) => void
 }
 
 const StoreContext = createContext<Store | null>(null)
@@ -96,7 +131,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     receipts: sample.receipts,
     loans: sample.loans,
     disbursements: sampleDisbursements,
+    expenseVouchers,
   })
+  const vouchers = useMemo(
+    () =>
+      [...state.disbursements.map((d) => releaseVoucher(d, state.loans)), ...state.expenseVouchers].sort((a, b) =>
+        b.no.localeCompare(a.no),
+      ),
+    [state.disbursements, state.expenseVouchers, state.loans],
+  )
   const value = useMemo<Store>(
     () => ({
       receipts: state.receipts,
@@ -104,6 +147,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       loans: state.loans.filter((l) => l.status === 'released'),
       allLoans: state.loans,
       disbursements: state.disbursements,
+      vouchers,
       postReceipt: (receipt) => dispatch({ type: 'post', receipt }),
       cancelReceipt: (no, reason) => dispatch({ type: 'cancel', no, reason }),
       submitLoan(loan, by, on) {
@@ -121,15 +165,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       approveLoan: (id, by) => dispatch({ type: 'approveLoan', id, by }),
       releaseLoan(id, by, on) {
         const voucher = nextNumber(
-          state.disbursements.map((d) => d.voucher),
+          vouchers.map((v) => v.no),
           'DV-',
           4,
         )
         dispatch({ type: 'releaseLoan', id, by, on, voucher })
         return voucher
       },
+      saveVoucher(voucher) {
+        const no = nextNumber(
+          vouchers.map((v) => v.no),
+          'DV-',
+          4,
+        )
+        dispatch({ type: 'saveVoucher', voucher: { ...voucher, no, kind: 'expense' } })
+        return no
+      },
+      deleteVoucher: (no) => dispatch({ type: 'deleteVoucher', no }),
     }),
-    [state],
+    [state, vouchers],
   )
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

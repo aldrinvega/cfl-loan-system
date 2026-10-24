@@ -26,6 +26,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -70,7 +78,16 @@ export function EncodePayment() {
   const orRef = useRef<HTMLInputElement>(null)
   const paymentRef = useRef<HTMLFormElement>(null)
 
+  const [confirming, setConfirming] = useState(false)
+
+  /** Like the legacy "Sure about your entries?": everything checks out, so show it once before posting. */
   function post() {
+    if (form.check()) setConfirming(true)
+    else toast.error("Payment wasn't posted", { description: 'Fix the items marked in red first.' })
+  }
+
+  function confirmPost() {
+    setConfirming(false)
     const name = form.account ? clientName(form.account.client) : ''
     const receipt = form.post()
     if (receipt) {
@@ -329,6 +346,54 @@ export function EncodePayment() {
           <SampleNote />
         </div>
       </div>
+
+      <Dialog open={confirming} onOpenChange={setConfirming}>
+        <DialogContent>
+          {form.account && form.breakdown && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Post OR {form.orNo}?</DialogTitle>
+                <DialogDescription>
+                  {clientName(form.account.client)} · {form.account.loan.id}. Posted receipts can't be edited; a
+                  mistake is fixed by cancelling the OR.
+                </DialogDescription>
+              </DialogHeader>
+              <dl className="flex flex-col text-sm">
+                {(
+                  [
+                    ['Cash', form.cash ?? 0],
+                    ...form.checks.map((c, i): [string, number] => [`Check ${c.no || i + 1}`, c.amount ?? 0]),
+                    ['Amortization', form.breakdown.amortization],
+                    ['Penalties', form.breakdown.penalty + form.breakdown.otherPenalty],
+                    ['Safekeeping', form.breakdown.safekeeping],
+                  ] as [string, number][]
+                ).map(([label, value]) => (
+                  <div key={label} className="flex justify-between gap-6 border-b border-rule py-2">
+                    <dt className="text-muted-foreground">{label}</dt>
+                    <dd>
+                      <Money value={value} />
+                    </dd>
+                  </div>
+                ))}
+                <div className="flex justify-between gap-6 pt-2 font-medium">
+                  <dt>Total received</dt>
+                  <dd>
+                    <Money value={form.received} />
+                  </dd>
+                </div>
+              </dl>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setConfirming(false)}>
+                  Go back
+                </Button>
+                <Button autoFocus onClick={confirmPost}>
+                  Post OR {form.orNo}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </Page>
   )
 }
