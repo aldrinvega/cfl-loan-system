@@ -279,6 +279,22 @@ marked "coming soon".
 
 ## Changes in the latest round
 
+- **Keyboard-only encoding** on Encode Payments, for encoders who never touch the mouse:
+  - The cursor starts in the route search. Type the collector no. ("3" finds 03) or a name;
+    ↑/↓ move the highlight, Enter picks and moves to the account search.
+  - Account search: type a name or loan ID; ↑/↓ move through the route, Enter picks and puts
+    the cursor in Cash. Enter then moves field to field.
+  - The legacy Cashiering letters work: Alt+E breakdown of amount received, Alt+D (or F7) total
+    due today, Alt+F full payment with rebate, Alt+H total to cash, Alt+K total to check, Alt+A
+    add check (cursor goes to its amount), Alt+P post. Each button shows its keys.
+  - Post (Alt+P or Ctrl+S), Enter confirms, and the cursor is back in the account search with
+    the same route and the next OR no., ready for the next receipt.
+  - Esc steps back one level: it clears a search first, then goes payment → account search →
+    route.
+  - Note: Chrome and Edge keep Alt+D for the address bar, which is why F7 does the same job.
+- **Animations**: the Dashboard greeting has a sun or moon that plays once (sunrise in the
+  morning, rays in the afternoon, moon and stars in the evening); the Dashboard line chart draws
+  in and the Collections bars rise once on load. Reduced-motion settings get a plain fade.
 - **From the legacy system videos** (six screen recordings and three photos of the FoxPro system,
   October 23, 2026):
   - **Disbursements is now a working voucher screen**, like the legacy one: every check voucher

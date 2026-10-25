@@ -23,6 +23,7 @@ import { booklets, collectors } from '@/data/sample'
 import { netProceeds } from '@/data/reportSamples'
 import { greetingFor, useNow } from '@/hooks/use-now'
 import { Page } from '@/components/layout'
+import { dayPeriod, TimeOfDayIcon } from '@/components/time-of-day'
 import { maybeMoney, Money } from '@/components/money'
 import { ButtonLink } from '@/components/button-link'
 import { CancelledBadge } from '@/components/shared'
@@ -397,8 +398,11 @@ function Greeting({ actions }: { actions: ReactNode }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
       <div className="flex flex-col gap-1.5">
-        <h1 className="text-[28px] leading-tight font-medium tracking-[-0.02em]">
-          {greetingFor(now)}, {user.firstName}
+        <h1 className="flex items-center gap-3 text-[28px] leading-tight font-medium tracking-[-0.02em]">
+          <span>
+            {greetingFor(now)}, {user.firstName}
+          </span>
+          <TimeOfDayIcon period={dayPeriod(now)} />
         </h1>
         <p className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
           <time dateTime={now.toISOString()} className="tabular-nums">
@@ -521,7 +525,7 @@ function CollectionsChart({ days, today }: { days: ReturnType<typeof useCollecti
         </CardAction>
       </CardHeader>
       <CardContent className="pt-2">
-        <ChartContainer config={chartConfig} className="aspect-auto h-[240px] w-full">
+        <ChartContainer config={chartConfig} className="chart-reveal-line aspect-auto h-[240px] w-full">
           <LineChart data={data} margin={{ left: 0, right: 8, top: 8 }}>
             <CartesianGrid vertical={false} stroke="var(--border)" />
             <YAxis

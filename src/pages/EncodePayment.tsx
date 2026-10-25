@@ -74,6 +74,7 @@ export function EncodePayment() {
   })
   const form = useCashieringForm(initial)
 
+  const collectorSearchRef = useRef<HTMLInputElement>(null)
   const accountSearchRef = useRef<HTMLInputElement>(null)
   const orRef = useRef<HTMLInputElement>(null)
   const paymentRef = useRef<HTMLFormElement>(null)
@@ -98,14 +99,53 @@ export function EncodePayment() {
     }
   }
 
+  /** Adds a check row and puts the cursor in its amount. */
+  function addCheck() {
+    const n = form.checks.length + 1
+    form.addCheck()
+    requestAnimationFrame(() => document.querySelector<HTMLElement>(`[aria-label="Check ${n} amount"]`)?.focus())
+  }
+
+  // Start where the work starts: the route, or the cash when we came in on a client's account.
+  useEffect(() => {
+    if (form.account) document.getElementById('cash')?.focus()
+    else if (form.collectorId) accountSearchRef.current?.focus()
+    else collectorSearchRef.current?.focus()
+    // Only on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   function unlockOr() {
     form.unlockOr()
     requestAnimationFrame(() => orRef.current?.select())
   }
 
-  // F2 finds an account, F5 unlocks the OR number, Ctrl+S posts.
+  // The legacy Cashiering module's underlined letters, so the encoders' Alt keys still work.
+  const altKeys: Record<string, () => void> = {
+    KeyE: form.computeFromReceived,
+    KeyD: form.computeDueToday,
+    KeyF: form.fullPaymentWithRebate,
+    KeyH: () => form.total !== 0 && form.totalToCash(),
+    KeyK: () => form.total !== 0 && form.totalToCheck(),
+    KeyA: addCheck,
+    KeyP: post,
+  }
+
+  // F2 finds an account, F5 unlocks the OR number, F7 is due today, Ctrl+S posts, Esc steps back.
   const onShortcut = useEffectEvent((e: globalThis.KeyboardEvent) => {
-    if (e.key === 'F2') {
+    if (confirming) return
+    if (e.altKey && !e.ctrlKey && !e.metaKey && form.account && form.breakdown && altKeys[e.code]) {
+      e.preventDefault()
+      altKeys[e.code]()
+    } else if (e.key === 'F7' && form.account) {
+      e.preventDefault()
+      form.computeDueToday()
+    } else if (e.key === 'Escape' && !e.defaultPrevented && !document.querySelector('[role="dialog"]')) {
+      // One level back each time: payment, then the account search, then the route.
+      const at = document.activeElement
+      if (paymentRef.current?.contains(at)) accountSearchRef.current?.focus()
+      else if (at === accountSearchRef.current) collectorSearchRef.current?.focus()
+    } else if (e.key === 'F2') {
       e.preventDefault()
       accountSearchRef.current?.focus()
     } else if (e.key === 'F5') {
@@ -157,17 +197,29 @@ export function EncodePayment() {
         description="Pick the collector's route, pick the account, then enter the cash and checks from the collector's receipt."
         actions={
           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <KbdGroup><Kbd>↑</Kbd><Kbd>↓</Kbd><Kbd>Enter</Kbd></KbdGroup> Pick
+            </span>
+            <span className="flex items-center gap-1.5"><Kbd>Esc</Kbd> Back</span>
             <span className="flex items-center gap-1.5"><Kbd>F2</Kbd> Find account</span>
             <span className="flex items-center gap-1.5"><Kbd>F5</Kbd> Change OR no.</span>
             <span className="flex items-center gap-1.5">
-              <KbdGroup><Kbd>Ctrl</Kbd><Kbd>S</Kbd></KbdGroup> Post
+              <KbdGroup><Kbd>Ctrl</Kbd><Kbd>S</Kbd></KbdGroup> or <KbdGroup><Kbd>Alt</Kbd><Kbd>P</Kbd></KbdGroup> Post
             </span>
           </div>
         }
       />
 
       <div className="grid items-start gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
-        <CollectorPicker routes={routes} selected={form.collectorId} onSelect={form.setCollectorId} />
+        <CollectorPicker
+          searchRef={collectorSearchRef}
+          routes={routes}
+          selected={form.collectorId}
+          onSelect={(id) => {
+            form.setCollectorId(id)
+            requestAnimationFrame(() => accountSearchRef.current?.focus())
+          }}
+        />
         <AccountPicker
           searchRef={accountSearchRef}
           collectorId={form.collectorId}
@@ -253,7 +305,7 @@ export function EncodePayment() {
                   />
                 </FieldGroup>
 
-                <CashAndChecks form={form} />
+                <CashAndChecks form={form} onAddCheck={addCheck} />
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <BreakdownCard
@@ -265,13 +317,18 @@ export function EncodePayment() {
                     onSafekeeping={form.setSafekeeping}
                   />
                   <div className="flex flex-col gap-2">
-                    <HelperButton active={form.mode === 'received'} onClick={form.computeFromReceived}>
+                    <HelperButton active={form.mode === 'received'} onClick={form.computeFromReceived} keys={['Alt', 'E']}>
                       Compute breakdown of amount received
                     </HelperButton>
-                    <HelperButton active={form.mode === 'due'} onClick={form.computeDueToday}>
+                    <HelperButton
+                      active={form.mode === 'due'}
+                      onClick={form.computeDueToday}
+                      keys={['F7']}
+                      shortcut="Alt+D F7"
+                    >
                       Compute total due today
                     </HelperButton>
-                    <HelperButton active={form.mode === 'full'} onClick={form.fullPaymentWithRebate}>
+                    <HelperButton active={form.mode === 'full'} onClick={form.fullPaymentWithRebate} keys={['Alt', 'F']}>
                       Full payment with rebate
                       {form.rebate > 0 && (
                         <Badge variant="secondary" className="ml-auto">
@@ -280,11 +337,25 @@ export function EncodePayment() {
                       )}
                     </HelperButton>
                     <div className="grid grid-cols-2 gap-2">
-                      <Button type="button" variant="outline" onClick={form.totalToCash} disabled={form.total === 0}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={form.totalToCash}
+                        disabled={form.total === 0}
+                        aria-keyshortcuts="Alt+H"
+                      >
                         Total to cash
+                        <KeyChips keys={['Alt', 'H']} />
                       </Button>
-                      <Button type="button" variant="outline" onClick={form.totalToCheck} disabled={form.total === 0}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={form.totalToCheck}
+                        disabled={form.total === 0}
+                        aria-keyshortcuts="Alt+K"
+                      >
                         Total to check
+                        <KeyChips keys={['Alt', 'K']} />
                       </Button>
                     </div>
                     <FieldDescription>
@@ -303,7 +374,7 @@ export function EncodePayment() {
               </CardContent>
 
               <CardFooter className="flex-wrap gap-3 border-t">
-                <Button type="submit" disabled={!form.matches}>
+                <Button type="submit" disabled={!form.matches} aria-keyshortcuts="Control+S Alt+P">
                   Post
                   <KbdGroup data-icon="inline-end">
                     <Kbd>Ctrl</Kbd>
@@ -423,19 +494,30 @@ function DateField({
 }
 
 function CollectorPicker({
+  searchRef,
   routes,
   selected,
   onSelect,
 }: {
+  searchRef: RefObject<HTMLInputElement | null>
   routes: { collector: Collector; open: number }[]
   selected: string | undefined
   onSelect: (id: string) => void
 }) {
   const [query, setQuery] = useState('')
   const q = query.trim().toLowerCase()
+  // "3" or "03" finds collector 03; anything else searches the name.
   const shown = routes.filter(
-    ({ collector }) => !q || collector.name.toLowerCase().includes(q) || collector.id.toLowerCase().includes(q),
+    ({ collector }) =>
+      !q ||
+      collector.name.toLowerCase().includes(q) ||
+      collector.id.toLowerCase().includes(q) ||
+      (/^\d+$/.test(q) && Number(collector.id) === Number(q)),
   )
+  const nav = useListNav(shown.length, (i) => {
+    onSelect(shown[i].collector.id)
+    setQuery('')
+  })
   return (
     <Card>
       <CardHeader>
@@ -448,22 +530,37 @@ function CollectorPicker({
             <Search />
           </InputGroupAddon>
           <InputGroupInput
+            ref={searchRef}
             aria-label="Search collectors"
-            placeholder="Search collector"
+            placeholder="Collector no. or name"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            role="combobox"
+            aria-expanded
+            aria-controls="routes"
+            aria-activedescendant={shown[nav.active] ? `route-${shown[nav.active].collector.id}` : undefined}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              nav.reset()
+            }}
+            onKeyDown={(e) => nav.onKeyDown(e, query, () => setQuery(''))}
+            {...nav.focusProps}
           />
         </InputGroup>
-        <ItemGroup className="gap-1" aria-label="Collectors">
-          {shown.map(({ collector, open }) => {
+        <ItemGroup className="gap-1" aria-label="Collectors" id="routes">
+          {shown.map(({ collector, open }, i) => {
             const isSelected = collector.id === selected
             return (
               <Item
                 key={collector.id}
+                id={`route-${collector.id}`}
                 size="sm"
                 aria-pressed={isSelected}
-                render={<button type="button" onClick={() => onSelect(collector.id)} />}
-                className={cn('w-full text-left', isSelected ? 'bg-muted' : 'hover:bg-muted/50')}
+                render={<button type="button" tabIndex={-1} onClick={() => onSelect(collector.id)} />}
+                className={cn(
+                  'w-full text-left',
+                  isSelected ? 'bg-muted' : 'hover:bg-muted/50',
+                  nav.showing && i === nav.active && 'ring-1 ring-ring/40',
+                )}
               >
                 <ItemContent>
                   <ItemTitle className={cn(isSelected && 'font-semibold')}>
@@ -498,6 +595,15 @@ function AccountPicker({
   const shown = accounts.filter(
     (a) => !q || clientName(a.client).toLowerCase().includes(q) || a.loan.id.toLowerCase().includes(q),
   )
+  const nav = useListNav(shown.length, (i) => {
+    onSelect(shown[i].loan.id)
+    setQuery('')
+  })
+  // Keep the highlighted row in view as the arrows move through a long route.
+  const highlighted = shown[nav.active]?.loan.id
+  useEffect(() => {
+    if (highlighted) document.getElementById(`acct-${highlighted}`)?.scrollIntoView?.({ block: 'nearest' })
+  }, [highlighted])
   const collector = collectors.find((c) => c.id === collectorId)
   return (
     <Card className="min-w-0">
@@ -518,13 +624,16 @@ function AccountPicker({
               aria-label="Search accounts"
               placeholder="Name or loan ID"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && shown[0]) {
-                  e.preventDefault()
-                  onSelect(shown[0].loan.id)
-                }
+              role="combobox"
+              aria-expanded
+              aria-controls="accounts"
+              aria-activedescendant={highlighted ? `acct-${highlighted}` : undefined}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                nav.reset()
               }}
+              onKeyDown={(e) => nav.onKeyDown(e, query, () => setQuery(''))}
+              {...nav.focusProps}
             />
             <InputGroupAddon align="inline-end">
               <Kbd>F2</Kbd>
@@ -547,13 +656,15 @@ function AccountPicker({
                 <TableHead className="text-right">Due today</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {shown.map((a) => {
+            <TableBody id="accounts">
+              {shown.map((a, i) => {
                 const isSelected = a.loan.id === selected
                 return (
                   <TableRow
                     key={a.loan.id}
-                    tabIndex={0}
+                    id={`acct-${a.loan.id}`}
+                    data-highlighted={(nav.showing && i === nav.active) || undefined}
+                    tabIndex={-1}
                     aria-selected={isSelected}
                     data-state={isSelected ? 'selected' : undefined}
                     onClick={() => onSelect(a.loan.id)}
@@ -563,7 +674,7 @@ function AccountPicker({
                         onSelect(a.loan.id)
                       }
                     }}
-                    className="cursor-pointer"
+                    className="cursor-pointer data-highlighted:bg-muted"
                   >
                     <TableCell>{a.loan.id}</TableCell>
                     <TableCell className="font-medium">{clientName(a.client)}</TableCell>
@@ -595,7 +706,7 @@ function AccountPicker({
   )
 }
 
-function CashAndChecks({ form }: { form: Form }) {
+function CashAndChecks({ form, onAddCheck }: { form: Form; onAddCheck: () => void }) {
   const checkTotal = form.checks.reduce((t, c) => t + (c.amount ?? 0), 0)
   return (
     <FieldSet className="min-w-0">
@@ -677,9 +788,10 @@ function CashAndChecks({ form }: { form: Form }) {
         </Table>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Button type="button" variant="outline" size="sm" onClick={form.addCheck}>
+        <Button type="button" variant="outline" size="sm" onClick={onAddCheck} aria-keyshortcuts="Alt+A">
           <Plus data-icon="inline-start" />
           Add check
+          <KeyChips keys={['Alt', 'A']} />
         </Button>
         <span className="text-sm text-muted-foreground">
           Total received <span className="text-lg font-semibold text-foreground"><Money value={form.received} /></span>
@@ -764,17 +876,32 @@ function Line({ label, value, strong = false }: { label: string; value: number; 
   )
 }
 
-function HelperButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: ReactNode }) {
+function HelperButton({
+  active,
+  onClick,
+  keys,
+  shortcut,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  keys: string[]
+  /** For aria-keyshortcuts when it differs from the chips shown. */
+  shortcut?: string
+  children: ReactNode
+}) {
   return (
     <Button
       type="button"
       variant={active ? 'secondary' : 'outline'}
       aria-pressed={active}
-      className="justify-start"
+      aria-keyshortcuts={shortcut ?? keys.join('+')}
+      className="h-auto min-h-10 justify-start py-2 text-left whitespace-normal"
       onClick={onClick}
     >
       {active && <Check data-icon="inline-start" />}
       {children}
+      <KeyChips keys={keys} />
     </Button>
   )
 }
@@ -929,4 +1056,49 @@ function PaymentRecord({ account }: { account: RouteAccount }) {
       </CardContent>
     </Card>
   )
+}
+
+/** The key chips on a button. Hidden from screen readers, which get aria-keyshortcuts instead. */
+function KeyChips({ keys }: { keys: string[] }) {
+  return (
+    <KbdGroup aria-hidden className="ml-auto pl-2">
+      {keys.map((k) => (
+        <Kbd key={k}>{k}</Kbd>
+      ))}
+    </KbdGroup>
+  )
+}
+
+/**
+ * Arrow keys move a highlight through a list while the cursor stays in its search box; Enter
+ * picks the highlighted item; Esc clears the search first, then lets the page step back.
+ */
+function useListNav(count: number, pick: (index: number) => void) {
+  const [active, setActive] = useState(0)
+  const [focused, setFocused] = useState(false)
+  const at = Math.min(active, Math.max(count - 1, 0))
+  return {
+    active: count ? at : -1,
+    /** Whether to draw the highlight: only while the search box has the cursor. */
+    showing: focused && count > 0,
+    focusProps: { onFocus: () => setFocused(true), onBlur: () => setFocused(false) },
+    reset: () => setActive(0),
+    onKeyDown(e: KeyboardEvent<HTMLInputElement>, query: string, clear: () => void) {
+      if (e.key === 'ArrowDown' && count) {
+        e.preventDefault()
+        setActive((at + 1) % count)
+      } else if (e.key === 'ArrowUp' && count) {
+        e.preventDefault()
+        setActive((at - 1 + count) % count)
+      } else if (e.key === 'Enter' && count) {
+        e.preventDefault()
+        pick(at)
+        setActive(0)
+      } else if (e.key === 'Escape' && query) {
+        e.preventDefault()
+        clear()
+        setActive(0)
+      }
+    },
+  }
 }

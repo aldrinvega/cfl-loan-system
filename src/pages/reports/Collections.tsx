@@ -112,7 +112,7 @@ export function Collections() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={chartConfig} className="aspect-auto h-64 w-full">
+          <ChartContainer config={chartConfig} className="chart-reveal-bars aspect-auto h-64 w-full">
             <BarChart data={chartData} accessibilityLayer>
               <CartesianGrid vertical={false} />
               <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={8} />

@@ -7,6 +7,7 @@ import { Money } from '@/components/money'
 import { collectors } from '@/data/sample'
 import { greetingFor, useNow } from '@/hooks/use-now'
 import { MobileScreen } from '@/components/mobile-layout'
+import { dayPeriod, TimeOfDayIcon } from '@/components/time-of-day'
 import { StatusBadge } from '@/components/shared'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -42,8 +43,11 @@ export function Today() {
   return (
     <MobileScreen title="Today">
       <div className="flex flex-col gap-0.5">
-        <h2 className="text-xl font-semibold tracking-tight">
-          {greetingFor(now)}, {user.firstName}
+        <h2 className="flex items-center gap-2 text-xl font-semibold tracking-tight">
+          <span>
+            {greetingFor(now)}, {user.firstName}
+          </span>
+          <TimeOfDayIcon period={dayPeriod(now)} className="size-7" />
         </h2>
         <p className="text-xs text-muted-foreground">
           <time dateTime={now.toISOString()} className="tabular-nums">

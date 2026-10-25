@@ -111,6 +111,9 @@
   --pill-negative-ink: #831c1e;
   --pill-warning-bg: #fffbeb;
   --pill-warning-ink: #92400e;
+  --sun: #e8a317;
+  --moon: #8496b3;
+  --horizon: #c9ced6;
 }
 
 /* True neutral darks: elevation by lightness, the same single blue on data. */
@@ -158,6 +161,9 @@
   --pill-negative-ink: #f07b8f;
   --pill-warning-bg: #2a2214;
   --pill-warning-ink: #e3b341;
+  --sun: #f2c14e;
+  --moon: #b7c3d7;
+  --horizon: #3d3d3d;
 }
 
 @layer base {
@@ -213,5 +219,96 @@
 @media print {
   .no-print {
     display: none !important;
+  }
+}
+
+/* The greeting's sun or moon: one entrance, then still (time-of-day.tsx). Plays on mount only;
+   the icon is keyed by the period, so the clock ticking never replays it. */
+.tod-rise {
+  animation: tod-rise 640ms var(--ease-out) both;
+}
+.tod-core {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tod-pop 420ms var(--ease-out) both;
+}
+.tod-ray {
+  transform-box: view-box;
+  animation: tod-fade 360ms var(--ease-out) both;
+  animation-delay: calc(260ms + var(--i, 0) * 45ms);
+}
+.tod-moon {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tod-turn 560ms var(--ease-out) both;
+}
+.tod-star {
+  animation: tod-fade 320ms var(--ease-out) both;
+  animation-delay: calc(360ms + var(--i, 0) * 120ms);
+}
+@keyframes tod-rise {
+  from { transform: translateY(9px); }
+}
+@keyframes tod-pop {
+  from { transform: scale(0.85); opacity: 0; }
+}
+@keyframes tod-turn {
+  from { transform: rotate(-24deg) scale(0.92); opacity: 0; }
+}
+@keyframes tod-fade {
+  from { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the fade that says "this just appeared"; drop the rising, turning and scaling. */
+  .tod-rise,
+  .tod-core,
+  .tod-moon {
+    animation: tod-fade 200ms ease both;
+  }
+  .tod-ray,
+  .tod-star {
+    animation-delay: 0ms;
+  }
+}
+
+/* Charts reveal their data once on load; axes, gridlines and labels are there from the start so
+   the scale is readable at once. CSS rather than recharts' own animation, which runs on the main
+   thread and stutters while the page is still loading. Switching the range stays instant. */
+.chart-reveal-line .recharts-line {
+  animation: chart-draw 720ms var(--ease-out) both;
+}
+.chart-reveal-line .recharts-line + .recharts-line {
+  animation-delay: 90ms;
+}
+.chart-reveal-bars .recharts-bar-rectangle {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: chart-grow 480ms var(--ease-out) both;
+}
+/* Left to right across the days, the second series a beat behind the first. */
+.chart-reveal-bars .recharts-bar-rectangle:nth-child(2) { animation-delay: 45ms; }
+.chart-reveal-bars .recharts-bar-rectangle:nth-child(3) { animation-delay: 90ms; }
+.chart-reveal-bars .recharts-bar-rectangle:nth-child(4) { animation-delay: 135ms; }
+.chart-reveal-bars .recharts-bar-rectangle:nth-child(5) { animation-delay: 180ms; }
+.chart-reveal-bars .recharts-bar-rectangle:nth-child(6) { animation-delay: 225ms; }
+.chart-reveal-bars .recharts-bar-rectangle:nth-child(n + 7) { animation-delay: 270ms; }
+.chart-reveal-bars .recharts-bar + .recharts-bar .recharts-bar-rectangle {
+  animation-name: chart-grow-late;
+}
+@keyframes chart-draw {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+/* Bars rise from the baseline they stand on; that's where the amount starts. */
+@keyframes chart-grow {
+  from { transform: scaleY(0); }
+}
+@keyframes chart-grow-late {
+  0%, 12% { transform: scaleY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chart-reveal-line .recharts-line,
+  .chart-reveal-bars .recharts-bar-rectangle {
+    animation: tod-fade 200ms ease both;
   }
 }
